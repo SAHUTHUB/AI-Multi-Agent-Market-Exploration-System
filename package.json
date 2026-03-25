@@ -1,0 +1,15 @@
+{
+  "name": "ai-agent-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "AI-agents"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "start": "npm run start --workspace=frontend",
+    "test": "npm run test --workspace=frontend"
+  }
+}

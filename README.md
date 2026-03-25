@@ -28,8 +28,12 @@ Since the application relies on Vercel's serverless infrastructure, **Docker is 
 1. **GROQ_API_KEY**: สำหรับการประมวลผล LLM (Groq Cloud)
 2. **GNEWS_API_KEY**: สำหรับการดึงข่าวสด (Live News API)
 
-### การตั้งค่าบน Vercel:
-1. ไปที่ **Vercel Dashboard** -> เลือกโปรเจกต์ของคุณ
-2. ไปที่แท็บ **Settings** -> **Environment Variables**
-3. เพิ่ม Key ทั้ง 2 ตัวเข้าไป -> กด **Save**
-4. ทำการ **Redeploy** เพื่อให้ระบบดึงค่าใหม่ไปใช้ครับ
+### การตั้งค่าบน Vercel (Monorepo Setup):
+1. ไปที่ **Vercel Dashboard** -> **Settings** -> **General**
+2. **Root Directory**: ให้เป็นค่าว่าง หรือ `./` (หน้าแรกสุดของ Repo)
+3. **Framework Preset**: เลือก **Next.js**
+4. **Build Command**: ใส่เป็น `npm run build --workspace=frontend`
+5. **Output Directory**: ใส่เป็น `frontend/.next`
+6. ไปที่แท็บ **Settings** -> **Environment Variables**
+7. เพิ่ม Key ทั้ง 2 ตัวเข้าไป (`GROQ_API_KEY`, `GNEWS_API_KEY`) -> กด **Save**
+8. ทำการ **Redeploy** ครับ
