@@ -13,6 +13,7 @@ import type {
 
 export type MarketInsightWorkflowInput = {
   query: string
+  dataSource?: Array<'api' | 'scrape' | 'mock'>
 }
 
 export type MarketInsightWorkflowResult = {
@@ -109,7 +110,7 @@ export class MarketInsightOrchestrator {
     const signalAnalysis = await this.newsSignalAgent.run(
       querySummary,
       marketContext,
-      (input as any).dataSource || ['mock']
+      input.dataSource || ['mock']
     )
     executionTrace.push('news_signal_analysis_completed')
 
@@ -119,6 +120,16 @@ export class MarketInsightOrchestrator {
       signalAnalysis,
       executionTrace,
     })
+
+    result.executionTrace.push(
+      `query_analysis_result: topic="${querySummary.topic}", region="${querySummary.region}"`
+    )
+    result.executionTrace.push(
+      `market_context_result: key_markets=[${marketContext.keyMarkets.join(', ')}]`
+    )
+    result.executionTrace.push(
+      `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments`
+    )
 
     result.executionTrace.push('workflow_completed')
 

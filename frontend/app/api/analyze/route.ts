@@ -3,7 +3,7 @@ import { RequestSchema } from '../../../../backend/schemas/request'
 import { QueryUnderstandingAgent } from '../../../../AI-agents/agents/query-understanding'
 import { MarketResearchAgent } from '../../../../AI-agents/agents/market-research'
 import { NewsSignalAgent } from '../../../../AI-agents/agents/news-signal'
-import { MarketInsightOrchestrator } from '../../../../AI-agents/orchestrator'
+import { MarketInsightOrchestrator, type MarketInsightWorkflowInput } from '../../../../AI-agents/orchestrator'
 import { GroqProvider } from '../../../../backend/services/providers/llm'
 import { MockProvider } from '../../../../backend/services/providers/mock'
 import { JsonMarketDataTool } from '../../../../backend/services/tools/market-data-tool'
@@ -62,10 +62,7 @@ export async function POST(request: Request) {
     const { query, dataSource } = parsed.data
 
     const orchestrator = createOrchestrator()
-    const result = await orchestrator.run({
-      query,
-      dataSource
-    } as any)
+    const result = await orchestrator.run(parsed.data as MarketInsightWorkflowInput)
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {

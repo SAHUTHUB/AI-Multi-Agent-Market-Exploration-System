@@ -21,6 +21,7 @@ export type RecentDevelopment = {
   headline: string
   summary: string
   impact: 'positive' | 'negative' | 'mixed' | 'neutral'
+  confidence: 'high' | 'medium' | 'low'
   publishedAt: string
 }
 
@@ -116,6 +117,13 @@ function cleanImpact(
   return 'neutral'
 }
 
+function cleanConfidence(value: unknown): 'high' | 'medium' | 'low' {
+  if (value === 'high' || value === 'medium' || value === 'low') {
+    return value
+  }
+  return 'medium'
+}
+
 function normalizeRecentDevelopments(
   raw: unknown,
   fallback: RecentDevelopment[]
@@ -133,6 +141,7 @@ function normalizeRecentDevelopments(
         headline: cleanString(record.headline, 'Untitled development'),
         summary: cleanString(record.summary, ''),
         impact: cleanImpact(record.impact),
+        confidence: cleanConfidence(record.confidence),
         publishedAt: cleanString(record.publishedAt, 'Unknown'),
       }
     })
@@ -159,6 +168,7 @@ function buildFallbackRecentDevelopments(
     headline: item.headline,
     summary: item.summary,
     impact: item.impact,
+    confidence: 'medium' as const,
     publishedAt: item.publishedAt,
   }))
 }

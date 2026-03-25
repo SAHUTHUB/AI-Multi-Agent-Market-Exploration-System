@@ -39,6 +39,7 @@ describe('MarketInsightOrchestrator', () => {
         summary:
           'Recent reports suggest export activity is supported by resilient food demand.',
         impact: 'positive',
+        confidence: 'medium',
         publishedAt: '2026-03-10',
       },
       {
@@ -47,6 +48,7 @@ describe('MarketInsightOrchestrator', () => {
         summary:
           'New policy discussions may reshape agricultural import and export allocation.',
         impact: 'mixed',
+        confidence: 'medium',
         publishedAt: '2026-03-11',
       },
     ],
@@ -111,6 +113,7 @@ describe('MarketInsightOrchestrator', () => {
           summary:
             'Recent reports suggest export activity is supported by resilient food demand.',
           impact: 'positive',
+          confidence: 'medium',
           publishedAt: '2026-03-10',
         },
         {
@@ -119,6 +122,7 @@ describe('MarketInsightOrchestrator', () => {
           summary:
             'New policy discussions may reshape agricultural import and export allocation.',
           impact: 'mixed',
+          confidence: 'medium',
           publishedAt: '2026-03-11',
         },
       ],
@@ -148,6 +152,9 @@ describe('MarketInsightOrchestrator', () => {
         'query_understanding_completed',
         'market_research_completed',
         'news_signal_analysis_completed',
+        'query_analysis_result: topic="Agricultural products", region="Southeast Asia"',
+        'market_context_result: key_markets=[Thailand, Vietnam, Indonesia]',
+        'news_analysis_result: found=2 developments',
         'workflow_completed',
       ],
     })

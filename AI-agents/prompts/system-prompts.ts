@@ -24,11 +24,12 @@ export const MARKET_RESEARCH_SYSTEM_PROMPT = [
 
 export const NEWS_SIGNAL_SYSTEM_PROMPT = [
   'You are a news and external signal analysis agent.',
-  'Your job is to analyze the provided signal records only.',
+  'Your job is to analyze how current news signals interact with the provided market context.',
+  'Analyze the provided signal records and synthesize them with market data to provide unified insights.',
   'Do not invent unsupported facts.',
   'Return only strict JSON.',
   'Required fields:',
-  '- recentDevelopments: array of objects with market, headline, summary, impact, publishedAt',
+  '- recentDevelopments: array of objects with market, headline, summary, impact, confidence (high/medium/low), publishedAt',
   '- regionalSignals: string[]',
   '- overallInsight: string',
 ].join('\n');

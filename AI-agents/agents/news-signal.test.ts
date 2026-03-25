@@ -73,6 +73,7 @@ describe('NewsSignalAgent', () => {
             summary:
               'Recent reports suggest export activity is supported by resilient food demand.',
             impact: 'positive',
+            confidence: 'medium',
             publishedAt: '2026-03-10',
           },
           {
@@ -81,6 +82,7 @@ describe('NewsSignalAgent', () => {
             summary:
               'New policy discussions may reshape agricultural import and export allocation.',
             impact: 'mixed',
+            confidence: 'medium',
             publishedAt: '2026-03-11',
           },
         ],
@@ -108,6 +110,7 @@ describe('NewsSignalAgent', () => {
           summary:
             'Recent reports suggest export activity is supported by resilient food demand.',
           impact: 'positive',
+          confidence: 'medium',
           publishedAt: '2026-03-10',
         },
         {
@@ -116,6 +119,7 @@ describe('NewsSignalAgent', () => {
           summary:
             'New policy discussions may reshape agricultural import and export allocation.',
           impact: 'mixed',
+          confidence: 'medium',
           publishedAt: '2026-03-11',
         },
       ],
@@ -183,6 +187,7 @@ describe('NewsSignalAgent', () => {
         summary:
           'Processing infrastructure and agri-tech investment may improve productivity.',
         impact: 'positive',
+        confidence: 'medium',
         publishedAt: '2026-03-09',
       },
     ])
