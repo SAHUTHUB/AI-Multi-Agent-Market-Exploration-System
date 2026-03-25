@@ -22,7 +22,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
@@ -30,8 +31,8 @@ body {
 
 #root {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
