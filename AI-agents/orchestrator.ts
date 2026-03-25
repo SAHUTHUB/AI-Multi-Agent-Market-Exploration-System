@@ -122,13 +122,13 @@ export class MarketInsightOrchestrator {
     })
 
     result.executionTrace.push(
-      `query_analysis_result: topic="${querySummary.topic}", region="${querySummary.region}"`
+      `query_breakdown: topic="${querySummary.topic}", region="${querySummary.region}", intent="${querySummary.intent}", info=["${querySummary.informationNeeded.join('", "')}"]`
     )
     result.executionTrace.push(
-      `market_context_result: key_markets=[${marketContext.keyMarkets.join(', ')}]`
+      `market_context_result: key_markets=["${marketContext.keyMarkets.join('", "')}"]`
     )
     result.executionTrace.push(
-      `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments`
+      `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments, sources=${input.dataSource?.join(', ') || 'mock'}`
     )
 
     result.executionTrace.push('workflow_completed')

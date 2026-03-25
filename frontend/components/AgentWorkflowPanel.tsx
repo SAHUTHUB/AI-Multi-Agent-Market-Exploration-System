@@ -177,6 +177,76 @@ export default function AgentWorkflowPanel({
             const isDone = state === 'done'
             const isActive = state === 'active'
 
+            // Extract dynamic details for this step if available
+            let dynamicDetailContent = null
+            if (isDone) {
+              if (step.id === 'query_understanding_completed') {
+                const breakdownEntry = executionTrace.find(t => t.startsWith('query_breakdown:'))
+                if (breakdownEntry) {
+                  try {
+                    const topic = breakdownEntry.match(/topic="([^"]+)"/)?.[1]
+                    const region = breakdownEntry.match(/region="([^"]+)"/)?.[1]
+                    const intent = breakdownEntry.match(/intent="([^"]+)"/)?.[1]
+                    const infoJson = breakdownEntry.match(/info=(\[.*\])/)?.[1]
+                    const info = infoJson ? JSON.parse(infoJson) : []
+                    
+                    dynamicDetailContent = (
+                      <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 8, fontSize: 13 }}>
+                          <span style={{ color: '#64748b', fontWeight: 600 }}>Topic:</span>
+                          <span style={{ color: '#0f172a', fontWeight: 500 }}>{topic}</span>
+                          <span style={{ color: '#64748b', fontWeight: 600 }}>Region:</span>
+                          <span style={{ color: '#0f172a', fontWeight: 500 }}>{region}</span>
+                          <span style={{ color: '#64748b', fontWeight: 600 }}>Intent:</span>
+                          <span style={{ color: '#2563eb', fontWeight: 600 }}>{intent}</span>
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+                          {info.map((item: string, i: number) => (
+                            <span key={i} style={{ background: '#f1f5f9', padding: '4px 8px', borderRadius: 6, fontSize: 11, color: '#475569' }}>
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  } catch (e) {
+                    console.error("Failed to parse query_breakdown", e)
+                  }
+                }
+              } else if (step.id === 'market_research_completed') {
+                const marketEntry = executionTrace.find(t => t.startsWith('market_context_result:'))
+                if (marketEntry) {
+                  try {
+                    const marketsJson = marketEntry.match(/key_markets=(\[.*\])/)?.[1]
+                    const markets = marketsJson ? JSON.parse(marketsJson) : []
+                    dynamicDetailContent = (
+                      <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        <span style={{ fontSize: 13, color: '#64748b', width: '100%', marginBottom: 4 }}>Focusing on:</span>
+                        {markets.map((m: string, i: number) => (
+                          <span key={i} style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 8px', borderRadius: 8, fontSize: 11, color: '#166534', fontWeight: 600 }}>
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+                    )
+                  } catch (e) {}
+                }
+              } else if (step.id === 'news_signal_analysis_completed') {
+                const newsEntry = executionTrace.find(t => t.startsWith('news_analysis_result:'))
+                if (newsEntry) {
+                  const count = newsEntry.match(/found=(\d+)/)?.[1]
+                  const sources = newsEntry.match(/sources=([^,]+(?:, [^,]+)*)/)?.[1]
+                  dynamicDetailContent = (
+                    <div style={{ marginTop: 10, fontSize: 13, color: '#334155' }}>
+                      <p style={{ margin: 0 }}>
+                        Found <strong>{count}</strong> signals from: <span style={{ color: '#2563eb' }}>{sources}</span>
+                      </p>
+                    </div>
+                  )
+                }
+              }
+            }
+
             return (
               <div
                 key={step.id}
@@ -309,10 +379,13 @@ export default function AgentWorkflowPanel({
                       marginBottom: 0,
                       color: '#334155',
                       lineHeight: 1.7,
+                      fontSize: 14,
                     }}
                   >
                     {step.detail}
                   </p>
+
+                  {dynamicDetailContent}
                 </div>
               </div>
             )
