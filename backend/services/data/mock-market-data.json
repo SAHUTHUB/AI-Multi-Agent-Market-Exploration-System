@@ -40,5 +40,33 @@
       "Domestic scale adds market resilience"
     ],
     "source": "mock-market-data.json"
+  },
+  {
+    "country": "Germany",
+    "topic": "Car spare parts",
+    "region": "Europe",
+    "overviewPoints": [
+      "Global hub for high-precision automotive engineering.",
+      "Primary supplier of premium OEM parts for European automakers."
+    ],
+    "industrySignals": [
+      "Massive structural shift towards Electric Vehicle (EV) components.",
+      "High automation in spare parts manufacturing."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "USA",
+    "topic": "Convenience food products",
+    "region": "North America",
+    "overviewPoints": [
+      "World's largest market for ready-to-eat and processed meals.",
+      "High consumer demand for diverse and time-saving food options."
+    ],
+    "industrySignals": [
+      "Strong trend towards organic and non-GMO convenience labels.",
+      "Advanced cold-chain distribution network."
+    ],
+    "source": "mock-market-data.json"
   }
 ]
