@@ -51,9 +51,11 @@ export async function POST(request: Request) {
     const parsed = RequestSchema.safeParse(body)
 
     if (!parsed.success) {
+      const errorMessage = (parsed as { error: { flatten: () => { fieldErrors: { query?: string[] } } } }).error.flatten().fieldErrors.query?.[0] ?? 'Query is required'
+
       return NextResponse.json(
         {
-          error: parsed.error.errors[0].message,
+          error: errorMessage,
         },
         { status: 400 }
       )
