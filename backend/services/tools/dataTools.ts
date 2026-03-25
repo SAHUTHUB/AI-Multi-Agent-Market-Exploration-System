@@ -40,7 +40,7 @@ export async function scrapeNewsWithCheerio(query: string) {
     const articles: { title: string }[] = [];
 
     // ดึงเฉพาะหัวข้อข่าวจากแท็ก <a> ที่อยู่ภายใน <article> (เอาแค่ 5 ข่าว)
-    $('article a').each((index: number, element: cheerio.Element) => {
+    $('article a').each((index: number, element: any) => {
       const title = $(element).text().trim();
       // คัดกรองข้อความว่างหรือสั้นเกินไปออก
       if (title.length > 15 && articles.length < 5 && !articles.some(a => a.title === title)) {
