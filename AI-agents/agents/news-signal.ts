@@ -3,6 +3,7 @@ import type {
   QuerySummary,
 } from './query-understanding'
 import type { MarketContext } from './market-research'
+import { fetchLiveNews, scrapeNewsWithCheerio } from '../../backend/services/tools/dataTools'
 
 export type ExternalSignalRecord = {
   country: string
@@ -239,14 +240,54 @@ export class NewsSignalAgent {
 
   async run(
     querySummary: QuerySummary,
-    marketContext: MarketContext
+    marketContext: MarketContext,
+    dataSource: 'api' | 'scrape' | 'mock' = 'mock'
   ): Promise<SignalAnalysis> {
-    const records = await this.signalDataTool.loadSignals({
-      topic: querySummary.topic,
-      region: querySummary.region,
-      keyMarkets: marketContext.keyMarkets,
-      searchHints: querySummary.searchHints,
-    })
+    let records: ExternalSignalRecord[] = []
+
+    switch (dataSource) {
+      case 'api': {
+        const result = await fetchLiveNews(querySummary.topic)
+        if (result.status === 'success' && result.articles) {
+          records = result.articles.map((a: any) => ({
+            country: querySummary.region, // Use region as fallback country
+            topic: querySummary.topic,
+            region: querySummary.region,
+            headline: a.title,
+            summary: a.description || '',
+            impact: 'neutral',
+            source: a.source,
+            publishedAt: a.publishedAt,
+          }))
+        }
+        break
+      }
+      case 'scrape': {
+        const result = await scrapeNewsWithCheerio(querySummary.topic)
+        if (result.status === 'success' && result.articles) {
+          records = result.articles.map((a: any) => ({
+            country: querySummary.region,
+            topic: querySummary.topic,
+            region: querySummary.region,
+            headline: a.title,
+            summary: '',
+            impact: 'neutral',
+            source: 'Google News (Scraped)',
+            publishedAt: new Date().toISOString(),
+          }))
+        }
+        break
+      }
+      case 'mock':
+      default:
+        records = await this.signalDataTool.loadSignals({
+          topic: querySummary.topic,
+          region: querySummary.region,
+          keyMarkets: marketContext.keyMarkets,
+          searchHints: querySummary.searchHints,
+        })
+        break
+    }
 
     if (records.length === 0) {
       return normalizeSignalAnalysis({}, records, querySummary, marketContext)

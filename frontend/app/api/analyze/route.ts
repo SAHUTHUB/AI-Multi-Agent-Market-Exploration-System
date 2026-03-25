@@ -53,18 +53,19 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         {
-          error: parsed.error.errors[0].message,
+          error: parsed.error.issues[0]?.message || 'Validation error',
         },
         { status: 400 }
       )
     }
 
-    const { query } = parsed.data
+    const { query, dataSource } = parsed.data
 
     const orchestrator = createOrchestrator()
     const result = await orchestrator.run({
       query,
-    })
+      dataSource
+    } as any)
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {

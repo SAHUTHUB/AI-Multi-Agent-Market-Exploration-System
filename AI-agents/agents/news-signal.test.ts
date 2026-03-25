@@ -4,6 +4,8 @@ import {
   type NewsSignalProvider,
   type SignalDataTool,
 } from './news-signal'
+import * as dataTools from '../../backend/services/tools/dataTools'
+vi.mock('../../backend/services/tools/dataTools')
 import type { QuerySummary } from './query-understanding'
 import type { MarketContext } from './market-research'
 
@@ -269,5 +271,33 @@ describe('NewsSignalAgent', () => {
         ],
       })
     )
+  })
+
+  it('should call fetchLiveNews when dataSource is api', async () => {
+    const signalDataTool: SignalDataTool = { loadSignals: vi.fn() }
+    const provider: NewsSignalProvider = { generateJson: vi.fn().mockResolvedValue({}) }
+    const agent = new NewsSignalAgent({ provider, signalDataTool })
+
+    const mockArticles = [{ title: 'API Title', description: 'API Desc', source: 'API Source', publishedAt: '2026-03-26' }]
+    vi.mocked(dataTools.fetchLiveNews).mockResolvedValue({ status: 'success', articles: mockArticles })
+
+    await agent.run(querySummary, marketContext, 'api')
+
+    expect(dataTools.fetchLiveNews).toHaveBeenCalledWith(querySummary.topic)
+    expect(provider.generateJson).toHaveBeenCalled()
+  })
+
+  it('should call scrapeNewsWithCheerio when dataSource is scrape', async () => {
+    const signalDataTool: SignalDataTool = { loadSignals: vi.fn() }
+    const provider: NewsSignalProvider = { generateJson: vi.fn().mockResolvedValue({}) }
+    const agent = new NewsSignalAgent({ provider, signalDataTool })
+
+    const mockArticles = [{ title: 'Scrape Title' }]
+    vi.mocked(dataTools.scrapeNewsWithCheerio).mockResolvedValue({ status: 'success', articles: mockArticles })
+
+    await agent.run(querySummary, marketContext, 'scrape')
+
+    expect(dataTools.scrapeNewsWithCheerio).toHaveBeenCalledWith(querySummary.topic)
+    expect(provider.generateJson).toHaveBeenCalled()
   })
 })
