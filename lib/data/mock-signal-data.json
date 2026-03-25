@@ -1,0 +1,32 @@
+[
+  {
+    "country": "Thailand",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "headline": "Investment in agricultural technology continues",
+    "summary": "Processing infrastructure and agri-tech investment may improve productivity and export competitiveness.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-09"
+  },
+  {
+    "country": "Vietnam",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "headline": "Agricultural export momentum remains strong",
+    "summary": "Recent reports suggest export activity is supported by resilient food demand and regional trade flows.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-10"
+  },
+  {
+    "country": "Indonesia",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "headline": "Import policy discussions may affect trade flows",
+    "summary": "New policy discussions may reshape agricultural import and export allocation across the region.",
+    "impact": "mixed",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-11"
+  }
+]

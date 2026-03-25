@@ -1,0 +1,44 @@
+[
+  {
+    "country": "Thailand",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "overviewPoints": [
+      "Thailand is a major regional agricultural exporter",
+      "The country supports strong food processing and export activity"
+    ],
+    "industrySignals": [
+      "Strong processing infrastructure",
+      "Regional trade continues to support demand"
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Vietnam",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "overviewPoints": [
+      "Vietnam shows strong export momentum in food-related sectors",
+      "Agricultural trade remains important to regional supply chains"
+    ],
+    "industrySignals": [
+      "Growing demand from overseas markets",
+      "Export-oriented production remains relevant"
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Indonesia",
+    "topic": "Agricultural products",
+    "region": "Southeast Asia",
+    "overviewPoints": [
+      "Indonesia has large domestic and regional agricultural relevance",
+      "The market supports broad agri-supply activity"
+    ],
+    "industrySignals": [
+      "Growing agri-supply chain activity",
+      "Domestic scale adds market resilience"
+    ],
+    "source": "mock-market-data.json"
+  }
+]

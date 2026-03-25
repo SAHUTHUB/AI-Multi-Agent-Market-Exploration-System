@@ -5,7 +5,7 @@ function App() {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   
@@ -58,12 +58,18 @@ function App() {
       setIsSearching(true);
       setHasSearched(true);
       try {
-        const response = await fetch(`http://localhost:3001/api/search?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`http://localhost:3000/api/analyze`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+        });
         const data = await response.json();
-        setResults(data.results);
+        setResults(data);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setResults([]);
+        setResults(null);
       } finally {
         setIsSearching(false);
       }
@@ -72,7 +78,7 @@ function App() {
 
   const clearSearch = () => {
     setQuery('');
-    setResults([]);
+    setResults(null);
     setHasSearched(false);
   };
 
@@ -122,17 +128,47 @@ function App() {
 
       {hasSearched && !isSearching && (
         <div className="results-container">
-          {results.length > 0 ? (
-            results.map((item) => (
-              <div key={item.id} className="result-card">
-                <span className="result-category">{item.category}</span>
-                <h3 className="result-title">{item.title}</h3>
-                <p className="result-summary">{item.summary}</p>
-              </div>
-            ))
+          {results && results.topic ? (
+            <div className="insight-card">
+              <span className="result-category">{results.region}</span>
+              <h3 className="result-title">{results.topic} Insights</h3>
+              <p className="result-summary">{results.marketInsights}</p>
+              
+              {results.keyMarkets && results.keyMarkets.length > 0 && (
+                <div className="markets-pills">
+                  {results.keyMarkets.map(market => <span key={market} className="pill">{market}</span>)}
+                </div>
+              )}
+
+              {results.recentDevelopments && results.recentDevelopments.length > 0 && (
+                <div className="developments-section">
+                  <h4 className="section-title">Recent Developments</h4>
+                  <div className="developments-grid">
+                    {results.recentDevelopments.map((dev, idx) => (
+                      <div key={idx} className={`dev-card impact-${dev.impact || 'neutral'}`}>
+                        <div className="dev-header">
+                          <span className="dev-market">{dev.market}</span>
+                          <span className="dev-impact">{dev.impact}</span>
+                        </div>
+                        <h5 className="dev-headline">{dev.headline}</h5>
+                        <p className="dev-summary">{dev.summary}</p>
+                        <span className="dev-date">{dev.publishedAt}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {results.overallInsight && (
+                <div className="overall-insight">
+                  <h4 className="section-title">Overall Impression</h4>
+                  <p>{results.overallInsight}</p>
+                </div>
+              )}
+            </div>
           ) : (
             <div className="no-results">
-              <p>No insights found for "{query}". Try adjusting your keywords.</p>
+              <p>No insights found for "{query}". Try adjusting your keywords to something like "agricultural products".</p>
             </div>
           )}
         </div>
