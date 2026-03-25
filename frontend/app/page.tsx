@@ -163,59 +163,63 @@ function App() {
       )}
 
       {hasSearched && (
-        <div style={{ marginTop: 24, width: '100%', maxWidth: '640px' }}>
-          <AgentWorkflowPanel
-            loading={isSearching}
-            executionTrace={results?.executionTrace || []}
-          />
-        </div>
-      )}
-
-      {hasSearched && !isSearching && (
-        <div className="results-container">
-          {results && results.topic ? (
-            <div className="insight-card">
-              <span className="result-category">{results.region}</span>
-              <h3 className="result-title">{results.topic} Insights</h3>
-              <p className="result-summary">{results.marketInsights}</p>
-              
-              {results.keyMarkets && results.keyMarkets.length > 0 && (
-                <div className="markets-pills">
-                  {results.keyMarkets.map((market: string) => <span key={market} className="pill">{market}</span>)}
-                </div>
-              )}
-
-              {results.recentDevelopments && results.recentDevelopments.length > 0 && (
-                <div className="developments-section">
-                  <h4 className="section-title">Recent Developments</h4>
-                  <div className="developments-grid">
-                    {results.recentDevelopments.map((dev: any, idx: number) => (
-                      <div key={idx} className={`dev-card impact-${dev.impact || 'neutral'}`}>
-                        <div className="dev-header">
-                          <span className="dev-market">{dev.market}</span>
-                          <span className="dev-impact">{dev.impact}</span>
-                        </div>
-                        <h5 className="dev-headline">{dev.headline}</h5>
-                        <p className="dev-summary">{dev.summary}</p>
-                        <span className="dev-date">{dev.publishedAt}</span>
+        <div className="main-content-layout">
+          <aside className="workflow-column">
+            <AgentWorkflowPanel
+              loading={isSearching}
+              executionTrace={results?.executionTrace || []}
+            />
+          </aside>
+          
+          <main className="results-column">
+            {!isSearching && (
+              <div className="results-container" style={{ marginTop: 0 }}>
+                {results && results.topic ? (
+                  <div className="insight-card">
+                    <span className="result-category">{results.region}</span>
+                    <h3 className="result-title">{results.topic} Insights</h3>
+                    <p className="result-summary">{results.marketInsights}</p>
+                    
+                    {results.keyMarkets && results.keyMarkets.length > 0 && (
+                      <div className="markets-pills">
+                        {results.keyMarkets.map((market: string) => <span key={market} className="pill">{market}</span>)}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    )}
 
-              {results.overallInsight && (
-                <div className="overall-insight">
-                  <h4 className="section-title">Overall Impression</h4>
-                  <p>{results.overallInsight}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="no-results">
-              <p>No insights found for "{query}". Try adjusting your keywords to something like "agricultural products".</p>
-            </div>
-          )}
+                    {results.recentDevelopments && results.recentDevelopments.length > 0 && (
+                      <div className="developments-section">
+                        <h4 className="section-title">Recent Developments</h4>
+                        <div className="developments-grid">
+                          {results.recentDevelopments.map((dev: any, idx: number) => (
+                            <div key={idx} className={`dev-card impact-${dev.impact || 'neutral'}`}>
+                              <div className="dev-header">
+                                <span className="dev-market">{dev.market}</span>
+                                <span className="dev-impact">{dev.impact}</span>
+                              </div>
+                              <h5 className="dev-headline">{dev.headline}</h5>
+                              <p className="dev-summary">{dev.summary}</p>
+                              <span className="dev-date">{dev.publishedAt}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {results.overallInsight && (
+                      <div className="overall-insight">
+                        <h4 className="section-title">Overall Impression</h4>
+                        <p>{results.overallInsight}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="no-results">
+                    <p>No insights found for "{query}". Try adjusting your keywords to something like "agricultural products".</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
         </div>
       )}
     </div>
