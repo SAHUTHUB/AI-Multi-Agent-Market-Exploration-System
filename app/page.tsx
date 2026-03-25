@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import AgentWorkflowPanel from '../components/AgentWorkflowPanel';
 
 function App() {
   const [query, setQuery] = useState('');
@@ -124,6 +125,15 @@ function App() {
       {!hasSearched && (
         <div className="hints">
           Press <span>Enter</span> to search across our global portfolio
+        </div>
+      )}
+
+      {hasSearched && (
+        <div style={{ marginTop: 24, width: '100%', maxWidth: '640px' }}>
+          <AgentWorkflowPanel
+            loading={isSearching}
+            executionTrace={results?.executionTrace || []}
+          />
         </div>
       )}
 
