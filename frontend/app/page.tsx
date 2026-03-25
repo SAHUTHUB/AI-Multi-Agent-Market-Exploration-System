@@ -10,6 +10,7 @@ function App() {
   const [results, setResults] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [dataSource, setDataSource] = useState<'api' | 'scrape' | 'mock'>('mock');
   
   const placeholders = [
     "Search car spare parts...",
@@ -65,7 +66,7 @@ function App() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ query }),
+          body: JSON.stringify({ query, dataSource }),
         });
         const data = await response.json();
         setResults(data);
@@ -120,6 +121,27 @@ function App() {
             </svg>
           </button>
         )}
+      </div>
+      
+      <div className="data-source-selector">
+        <button 
+          className={`source-pill ${dataSource === 'mock' ? 'active' : ''}`}
+          onClick={() => setDataSource('mock')}
+        >
+          Mock Data
+        </button>
+        <button 
+          className={`source-pill ${dataSource === 'api' ? 'active' : ''}`}
+          onClick={() => setDataSource('api')}
+        >
+          GNews API
+        </button>
+        <button 
+          className={`source-pill ${dataSource === 'scrape' ? 'active' : ''}`}
+          onClick={() => setDataSource('scrape')}
+        >
+          Web Scraping
+        </button>
       </div>
       
       {!hasSearched && (
