@@ -10,7 +10,19 @@ function App() {
   const [results, setResults] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [dataSource, setDataSource] = useState<'api' | 'scrape' | 'mock'>('mock');
+  const [dataSource, setDataSource] = useState<Array<'api' | 'scrape' | 'mock'>>(['mock']);
+
+  const toggleSource = (source: 'api' | 'scrape' | 'mock') => {
+    setDataSource(prev => {
+      if (prev.includes(source)) {
+        if (prev.length === 1) return prev;
+        return prev.filter(s => s !== source);
+      } else {
+        return [...prev, source];
+      }
+    });
+  };
+
   
   const placeholders = [
     "Search car spare parts...",
@@ -125,20 +137,20 @@ function App() {
       
       <div className="data-source-selector">
         <button 
-          className={`source-pill ${dataSource === 'mock' ? 'active' : ''}`}
-          onClick={() => setDataSource('mock')}
+          className={`source-pill ${dataSource.includes('mock') ? 'active' : ''}`}
+          onClick={() => toggleSource('mock')}
         >
           Mock Data
         </button>
         <button 
-          className={`source-pill ${dataSource === 'api' ? 'active' : ''}`}
-          onClick={() => setDataSource('api')}
+          className={`source-pill ${dataSource.includes('api') ? 'active' : ''}`}
+          onClick={() => toggleSource('api')}
         >
           GNews API
         </button>
         <button 
-          className={`source-pill ${dataSource === 'scrape' ? 'active' : ''}`}
-          onClick={() => setDataSource('scrape')}
+          className={`source-pill ${dataSource.includes('scrape') ? 'active' : ''}`}
+          onClick={() => toggleSource('scrape')}
         >
           Web Scraping
         </button>

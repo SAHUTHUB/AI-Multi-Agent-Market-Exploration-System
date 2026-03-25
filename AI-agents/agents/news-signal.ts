@@ -241,62 +241,65 @@ export class NewsSignalAgent {
   async run(
     querySummary: QuerySummary,
     marketContext: MarketContext,
-    dataSource: 'api' | 'scrape' | 'mock' = 'mock'
+    dataSources: Array<'api' | 'scrape' | 'mock'> = ['mock']
   ): Promise<SignalAnalysis> {
-    let records: ExternalSignalRecord[] = []
+    let allRecords: ExternalSignalRecord[] = []
 
-    switch (dataSource) {
-      case 'api': {
-        const result = await fetchLiveNews(querySummary.topic)
-        if (result.status === 'success' && result.articles) {
-          records = result.articles.map((a: any) => ({
-            country: querySummary.region, // Use region as fallback country
+    for (const source of dataSources) {
+      let sourceRecords: ExternalSignalRecord[] = []
+      switch (source) {
+        case 'api': {
+          const result = await fetchLiveNews(querySummary.topic)
+          if (result.status === 'success' && result.articles) {
+            sourceRecords = result.articles.map((a: any) => ({
+              country: querySummary.region,
+              topic: querySummary.topic,
+              region: querySummary.region,
+              headline: a.title,
+              summary: a.description || '',
+              impact: 'neutral',
+              source: a.source,
+              publishedAt: a.publishedAt,
+            }))
+          }
+          break
+        }
+        case 'scrape': {
+          const result = await scrapeNewsWithCheerio(querySummary.topic)
+          if (result.status === 'success' && result.articles) {
+            sourceRecords = result.articles.map((a: any) => ({
+              country: querySummary.region,
+              topic: querySummary.topic,
+              region: querySummary.region,
+              headline: a.title,
+              summary: '',
+              impact: 'neutral',
+              source: 'Google News (Scraped)',
+              publishedAt: new Date().toISOString(),
+            }))
+          }
+          break
+        }
+        case 'mock':
+          sourceRecords = await this.signalDataTool.loadSignals({
             topic: querySummary.topic,
             region: querySummary.region,
-            headline: a.title,
-            summary: a.description || '',
-            impact: 'neutral',
-            source: a.source,
-            publishedAt: a.publishedAt,
-          }))
-        }
-        break
+            keyMarkets: marketContext.keyMarkets,
+            searchHints: querySummary.searchHints,
+          })
+          break
       }
-      case 'scrape': {
-        const result = await scrapeNewsWithCheerio(querySummary.topic)
-        if (result.status === 'success' && result.articles) {
-          records = result.articles.map((a: any) => ({
-            country: querySummary.region,
-            topic: querySummary.topic,
-            region: querySummary.region,
-            headline: a.title,
-            summary: '',
-            impact: 'neutral',
-            source: 'Google News (Scraped)',
-            publishedAt: new Date().toISOString(),
-          }))
-        }
-        break
-      }
-      case 'mock':
-      default:
-        records = await this.signalDataTool.loadSignals({
-          topic: querySummary.topic,
-          region: querySummary.region,
-          keyMarkets: marketContext.keyMarkets,
-          searchHints: querySummary.searchHints,
-        })
-        break
+      allRecords = [...allRecords, ...sourceRecords]
     }
 
-    if (records.length === 0) {
-      return normalizeSignalAnalysis({}, records, querySummary, marketContext)
+    if (allRecords.length === 0) {
+      return normalizeSignalAnalysis({}, allRecords, querySummary, marketContext)
     }
 
     const messages = this.buildPrompt({
       querySummary,
       marketContext,
-      records,
+      records: allRecords,
     })
 
     const raw = await this.provider.generateJson<Partial<SignalAnalysis>>({
@@ -305,6 +308,6 @@ export class NewsSignalAgent {
       maxTokens: 900,
     })
 
-    return normalizeSignalAnalysis(raw, records, querySummary, marketContext)
+    return normalizeSignalAnalysis(raw, allRecords, querySummary, marketContext)
   }
 }

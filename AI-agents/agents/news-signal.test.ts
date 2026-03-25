@@ -98,7 +98,7 @@ describe('NewsSignalAgent', () => {
       signalDataTool,
     })
 
-    const result = await agent.run(querySummary, marketContext)
+    const result = await agent.run(querySummary, marketContext, ['mock'])
 
     expect(result).toEqual({
       recentDevelopments: [
@@ -171,7 +171,7 @@ describe('NewsSignalAgent', () => {
       signalDataTool,
     })
 
-    const result = await agent.run(querySummary, marketContext)
+    const result = await agent.run(querySummary, marketContext, ['mock'])
 
     expect(result.overallInsight).toBe(
       'Technology investment may support regional competitiveness.'
@@ -212,7 +212,7 @@ describe('NewsSignalAgent', () => {
       signalDataTool,
     })
 
-    const result = await agent.run(querySummary, marketContext)
+    const result = await agent.run(querySummary, marketContext, ['mock'])
 
     expect(result).toEqual({
       recentDevelopments: [],
@@ -260,7 +260,7 @@ describe('NewsSignalAgent', () => {
       buildPrompt,
     })
 
-    await agent.run(querySummary, marketContext)
+    await agent.run(querySummary, marketContext, ['mock'])
 
     expect(buildPrompt).toHaveBeenCalled()
     expect(provider.generateJson).toHaveBeenCalledWith(
@@ -281,7 +281,7 @@ describe('NewsSignalAgent', () => {
     const mockArticles = [{ title: 'API Title', description: 'API Desc', source: 'API Source', publishedAt: '2026-03-26' }]
     vi.mocked(dataTools.fetchLiveNews).mockResolvedValue({ status: 'success', articles: mockArticles })
 
-    await agent.run(querySummary, marketContext, 'api')
+    await agent.run(querySummary, marketContext, ['api'])
 
     expect(dataTools.fetchLiveNews).toHaveBeenCalledWith(querySummary.topic)
     expect(provider.generateJson).toHaveBeenCalled()
@@ -295,9 +295,37 @@ describe('NewsSignalAgent', () => {
     const mockArticles = [{ title: 'Scrape Title' }]
     vi.mocked(dataTools.scrapeNewsWithCheerio).mockResolvedValue({ status: 'success', articles: mockArticles })
 
-    await agent.run(querySummary, marketContext, 'scrape')
+    await agent.run(querySummary, marketContext, ['scrape'])
 
     expect(dataTools.scrapeNewsWithCheerio).toHaveBeenCalledWith(querySummary.topic)
     expect(provider.generateJson).toHaveBeenCalled()
+  })
+
+  it('should aggregate multiple data sources', async () => {
+    const signalDataTool: SignalDataTool = { 
+      loadSignals: vi.fn().mockResolvedValue([{ headline: 'Mock Title', country: 'TH', source: 'mock', publishedAt: '2026-03-25' }]) 
+    }
+    const provider: NewsSignalProvider = { generateJson: vi.fn().mockResolvedValue({}) }
+    const agent = new NewsSignalAgent({ provider, signalDataTool })
+
+    vi.mocked(dataTools.fetchLiveNews).mockResolvedValue({ 
+      status: 'success', 
+      articles: [{ title: 'API Title', source: 'API', publishedAt: '2026-03-26' }] 
+    })
+
+    await agent.run(querySummary, marketContext, ['api', 'mock'])
+
+    expect(dataTools.fetchLiveNews).toHaveBeenCalled()
+    expect(signalDataTool.loadSignals).toHaveBeenCalled()
+    expect(provider.generateJson).toHaveBeenCalledWith(expect.objectContaining({
+      messages: expect.arrayContaining([
+        expect.objectContaining({
+          content: expect.stringContaining('API Title'),
+        }),
+        expect.objectContaining({
+          content: expect.stringContaining('Mock Title'),
+        })
+      ])
+    }))
   })
 })

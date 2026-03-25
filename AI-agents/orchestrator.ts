@@ -109,7 +109,7 @@ export class MarketInsightOrchestrator {
     const signalAnalysis = await this.newsSignalAgent.run(
       querySummary,
       marketContext,
-      (input as any).dataSource || 'mock'
+      (input as any).dataSource || ['mock']
     )
     executionTrace.push('news_signal_analysis_completed')
 
