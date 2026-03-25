@@ -22,3 +22,7 @@
 
 ---
 *หมายเหตุ: ในเวอร์ชันการใช้งานจริง (Production) ข้อมูลเหล่านี้สามารถเปลี่ยนเป็น API เชื่อมต่อกับฐานข้อมูลจริงหรือ News Aggregators ภายนอกได้โดยการเปลี่ยน Implementation ของ Data Tools ในโฟลเดอร์ `backend/services/tools/`*
+
+> [!IMPORTANT]
+> สำหรับการรันบน **Vercel**, อย่าลืมตั้งค่า `GROQ_API_KEY` และ `GNEWS_API_KEY` ในส่วน **Environment Variables** เพื่อให้ Agent สามารถเรียกใช้ Live Data ได้ครับ
+
