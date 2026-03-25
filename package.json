@@ -1,0 +1,11 @@
+{
+  "name": "ai-agent-monorepo",
+  "private": true,
+  "scripts": {
+    "vercel-build": "npm --prefix frontend ci && mkdir -p node_modules && rm -rf node_modules/zod && ln -s ../frontend/node_modules/zod node_modules/zod && npm --prefix frontend run build && rm -rf .next && cp -R frontend/.next .next",
+    "build": "npm --prefix frontend run build"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
