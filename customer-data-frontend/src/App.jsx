@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
 function App() {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -58,7 +60,7 @@ function App() {
       setIsSearching(true);
       setHasSearched(true);
       try {
-        const response = await fetch(`http://localhost:3000/api/analyze`, {
+        const response = await fetch(`${apiBaseUrl}/api/analyze`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
