@@ -28,5 +28,35 @@
     "impact": "mixed",
     "source": "mock-signal-data.json",
     "publishedAt": "2026-03-11"
+  },
+  {
+    "country": "Germany",
+    "topic": "Car spare parts",
+    "region": "Europe",
+    "headline": "Traditional engine part demand plummets",
+    "summary": "As EU transition to EV accelerates, suppliers of internal combustion engine (ICE) parts report a sharp 25% drop in new orders.",
+    "impact": "negative",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-24"
+  },
+  {
+    "country": "Germany",
+    "topic": "Car spare parts",
+    "region": "Europe",
+    "headline": "Record investment in Battery System components",
+    "summary": "The German government announces a €2B fund to support local manufacturers switching to EV battery housing and thermal management systems.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-25"
+  },
+  {
+    "country": "USA",
+    "topic": "Convenience food products",
+    "region": "North America",
+    "headline": "Eco-friendly packaging shortage hits brands",
+    "summary": "Rising demand for sustainable containers has led to a nationwide shortage, forcing convenience food brands to delay new healthy-product launches.",
+    "impact": "mixed",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-26"
   }
 ]
