@@ -1,5 +1,18 @@
 # 🚀 AI Multi-Agent Market Exploration System
 
+Welcome to the **Market Intelligence Assistant**, a high-performance prototype designed for global trading firms. This system bridges the gap between static market knowledge and real-time global events, helping international trade teams make informed decisions in volatile markets (e.g., Agricultural Goods, Automotive Parts, and Convenience Food).
+---
+
+## 🎯 Strategic Purpose & Business Value
+
+General search engines return noise. Standard AI chatbots lack current context. This system uses **Collaborative AI Agents** to deliver precise, actionable insights. 
+
+**Key Business Use Cases:**
+1. **Market Disruption Analysis:** *“How do recent floods in Southeast Asia affect regional agricultural exports?”* The AI establishes historical baseline stability and synthesizes it with real-time weather/policy news to assess immediate risk.
+2. **Rapid Signal Filtering:** *“Are there any supply chain issues for car spare parts in Germany?”* The AI acts as a specialized filter, ignoring general news and extracting only headlines with direct industrial or economic impact.
+3. **Cross-Regional Opportunity Mapping:** Easily compare market sentiments across different global regions with normalized, easy-to-read impact scorecards.
+
+---
 A high-performance prototype designed to demonstrate **Collaborative AI Intelligence**. This system breaks down complex market research tasks into a multi-agent pipeline, synthesizing internal ground-truth data with real-time external signals.
 
 ---
