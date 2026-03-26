@@ -3,11 +3,11 @@ import {
   NewsSignalAgent,
   type NewsSignalProvider,
   type SignalDataTool,
-} from './news-signal'
+} from '../agents/news-signal'
 import * as dataTools from '../../backend/services/tools/dataTools'
 vi.mock('../../backend/services/tools/dataTools')
-import type { QuerySummary } from './query-understanding'
-import type { MarketContext } from './market-research'
+import type { QuerySummary } from '../agents/query-understanding'
+import type { MarketContext } from '../agents/market-research'
 
 describe('NewsSignalAgent', () => {
   const querySummary: QuerySummary = {

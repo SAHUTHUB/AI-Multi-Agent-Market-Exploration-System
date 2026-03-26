@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   QueryUnderstandingAgent,
   type QueryUnderstandingProvider
-} from './query-understanding'
+} from '../agents/query-understanding'
 
 describe('QueryUnderstandingAgent', () => {
   it('should parse query and return normalized structured output', async () => {

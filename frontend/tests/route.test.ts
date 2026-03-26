@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { POST } from './route'
+import { POST } from '../app/api/analyze/route'
 
 describe('POST /api/analyze', () => {
   const originalEnv = process.env
@@ -80,6 +80,9 @@ describe('POST /api/analyze', () => {
       'query_understanding_completed',
       'market_research_completed',
       'news_signal_analysis_completed',
+      'query_breakdown: topic="Agricultural products", region="Southeast Asia", intent="market_exploration", info=["market insights", "recent developments"]',
+      'market_context_result: key_markets=["Thailand", "Vietnam", "Indonesia"]',
+      'news_analysis_result: found=2 developments, sources=mock',
       'workflow_completed',
     ])
   })

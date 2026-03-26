@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { GroqProvider } from './llm'
+import { GroqProvider } from '../services/providers/llm'
 
 describe('GroqProvider', () => {
   const originalEnv = process.env

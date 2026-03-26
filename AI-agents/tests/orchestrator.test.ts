@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { MarketInsightOrchestrator } from './orchestrator'
-import type { QuerySummary } from './agents/query-understanding'
-import type { MarketContext } from './agents/market-research'
-import type { SignalAnalysis } from './agents/news-signal'
+import { MarketInsightOrchestrator } from '../orchestrator'
+import type { QuerySummary } from '../agents/query-understanding'
+import type { MarketContext } from '../agents/market-research'
+import type { SignalAnalysis } from '../agents/news-signal'
 
 describe('MarketInsightOrchestrator', () => {
   const querySummary: QuerySummary = {

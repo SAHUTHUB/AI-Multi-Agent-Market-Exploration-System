@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { JsonSignalDataTool } from './signal-data-tool'
-import type { ExternalSignalRecord } from '../agents/news-signal'
+import { JsonSignalDataTool } from '../services/tools/signal-data-tool'
+import type { ExternalSignalRecord } from '../../AI-agents/agents/news-signal'
 
 describe('JsonSignalDataTool', () => {
   const records: ExternalSignalRecord[] = [

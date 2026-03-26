@@ -3,8 +3,8 @@ import {
   MarketResearchAgent,
   type MarketDataTool,
   type MarketResearchProvider,
-} from './market-research'
-import type { QuerySummary } from './query-understanding'
+} from '../agents/market-research'
+import type { QuerySummary } from '../agents/query-understanding'
 
 describe('MarketResearchAgent', () => {
   const querySummary: QuerySummary = {

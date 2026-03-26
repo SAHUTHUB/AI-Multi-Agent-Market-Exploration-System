@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { JsonMarketDataTool } from './market-data-tool'
-import type { MarketDataRecord } from '../agents/market-research'
+import { JsonMarketDataTool } from '../services/tools/market-data-tool'
+import type { MarketDataRecord } from '../../AI-agents/agents/market-research'
 
 describe('JsonMarketDataTool', () => {
   const records: MarketDataRecord[] = [
