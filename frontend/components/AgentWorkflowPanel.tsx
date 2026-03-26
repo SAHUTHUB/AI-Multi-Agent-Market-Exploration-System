@@ -19,31 +19,31 @@ const steps: WorkflowStep[] = [
     id: 'workflow_started',
     title: 'Orchestrator Started',
     subtitle: 'Workflow boot',
-    detail: 'รับ query จากหน้าเว็บ และเริ่มคุมลำดับการทำงานทั้งหมด',
+    detail: 'Receives user query and orchestrates the complete analysis workflow.',
   },
   {
     id: 'query_understanding_completed',
     title: 'Query Understanding Agent',
     subtitle: 'Parse user intent',
-    detail: 'แยก topic, region, intent และ search hints จากคำถามผู้ใช้',
+    detail: 'Extracts topic, region, intent, and search hints from natural language.',
   },
   {
     id: 'market_research_completed',
     title: 'Market Research Agent',
     subtitle: 'Build market context',
-    detail: 'ดึง market data แล้วสรุป key markets และภาพรวมของตลาด',
+    detail: 'Retrieves market data and synthesizes key markets and industry overview.',
   },
   {
     id: 'news_signal_analysis_completed',
     title: 'News / Signal Agent',
     subtitle: 'Analyze developments',
-    detail: 'ดึงข่าวหรือสัญญาณภายนอก แล้ววิเคราะห์ผลกระทบต่อ market context',
+    detail: 'Aggregates news signals and evaluates their impact on the market context.',
   },
   {
     id: 'workflow_completed',
     title: 'Final Report Ready',
     subtitle: 'Return response',
-    detail: 'รวมผลทั้งหมดกลับเป็น final insight report ให้หน้าเว็บแสดงผล',
+    detail: 'Compiles all agent findings into a finalized, actionable insight report.',
   },
 ]
 
