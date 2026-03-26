@@ -14,42 +14,46 @@ The system follows a **Stateless Sequential Orchestration** pattern. It transfor
 
 ```mermaid
 graph TD
-    %% User Input
-    User([User Query String]) -->|POST| API[Next.js API Route]
-    
-    %% Orchestration Layer
-    subgraph Orchestrator[Market Insight Orchestrator]
+    %% Define Styles
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef agent fill:#fff4e5,stroke:#d4a017,stroke-width:2px
+    classDef tool fill:#f5f5f5,stroke:#333,stroke-dasharray: 5 5
+    classDef synthesis fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 2 2
+    classDef result fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+
+    %% Flow Start
+    Input([User Query]) --> QUA
+
+    subgraph Agents [Multi-Agent Reasoning & Synthesis Chain]
         direction TB
-        QUA[Query Understanding Agent]
-        MRA[Market Research Agent]
-        NSA[News Signal Agent]
+        QUA[1. Query Understanding Agent]
+        MRA[2. Market Research Agent]
+        NSA[3. News Signal Agent]
+        
+        %% Sequence & Context Passing
+        QUA -->|Extracts Intent| MRA
+        MRA -->|Builds Market Context| NSA
+        QUA -->|Provides Search Hints| NSA
+
+        %% THE MISSING PIECE: Final Synthesis
+        NSA --> SYN{Final Insight Synthesis}
+        note[Combined: Market Context + Live Signals] -.-> SYN
     end
 
-    API -->|Initialize| Orchestrator
-    
-    %% Workflow Steps
-    QUA -->|Structured Schema| MRA
-    MRA -->|Market Context| NSA
-    QUA -->|Search Hints| NSA
+    %% Tools Interaction (Simplified)
+    MRA --- DB[(Internal Knowledge)]
+    NSA --- Tools{Live News & Scraper}
 
-    %% Data Tools Layer
-    subgraph DataTools[Data Strategy Layer]
-        direction LR
-        JSON[(Internal JSON)]
-        GNews[GNews API]
-        Scrape[Cheerio Scraper]
-    end
+    %% Orchestrator Packaging
+    SYN --> ORCH[Market Insight Orchestrator]
+    ORCH -->|Builds Final Insight Report| Output([Frontend Insight Display])
 
-    MRA -->|Retrieves| JSON
-    NSA -->|Aggregates| GNews
-    NSA -->|Aggregates| Scrape
-    NSA -->|Aggregates| JSON
-
-    %% Output
-    Orchestrator -->|Final Insight Report| Result([Frontend Display])
-    
-    style Orchestrator fill:#f5f5f5,stroke:#333,stroke-width:2px
-    style DataTools fill:#fffbe6,stroke:#d4b106,stroke-width:1px
+    %% Assign Classes
+    class Input user
+    class QUA,MRA,NSA agent
+    class DB,Tools tool
+    class SYN synthesis
+    class Output result
 ```
 
 ---
