@@ -20,26 +20,48 @@ The following diagram illustrates how data from multiple sources flows through t
 
 ```mermaid
 graph TD
-    subgraph DataSources [Data Sources Layer]
-        JSON["Internal JSON (Structured)"]
-        GNews["GNews API (Dynamic)"]
-        Scrape["Web Scraping (Fresh)"]
-        Mock["Mock Signals (Deterministic)"]
+    %% Define Styles
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef agent fill:#fff4e5,stroke:#d4a017,stroke-width:2px
+    classDef tool fill:#f5f5f5,stroke:#333,stroke-dasharray: 5 5
+    classDef result fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+
+    %% Flow
+    Input([User Query]) --> QUA
+
+    subgraph Agents [Multi-Agent Reasoning Chain]
+        QUA[1. Query Understanding Agent]
+        MRA[2. Market Research Agent]
+        NSA[3. News Signal Agent]
+        
+        %% Sequence & Context Passing
+        QUA -->|Structured Metadata| MRA
+        MRA -->|Market Context| NSA
+        QUA -->|Search Hints| NSA
     end
 
-    subgraph Agents [AI Agents Layer]
-        QUA[Query Understanding Agent]
-        MRA[Market Research Agent]
-        NSA[News Signal Agent]
+    %% Tools Interaction
+    MRA --- Tool1[(Internal Market Data)]
+    
+    NSA --- Tool2{Data Fetcher}
+    subgraph ExternalSources [External & Mock Signals]
+        direction LR
+        S1[GNews API]
+        S2[Web Scraper]
+        S3[Mock Signals]
     end
+    Tool2 --> S1
+    Tool2 --> S2
+    Tool2 --> S3
 
-    User([User Query]) --> QUA
-    QUA --> MRA
-    MRA --> NSA
-    NSA -.-> GNews
-    NSA -.-> Scrape
-    NSA -.-> Mock
-    JSON -.-> MRA
+    %% Final Output
+    NSA --> Output([Final Insight Report])
+
+    %% Assign Classes
+    class Input user
+    class QUA,MRA,NSA agent
+    class Tool1,Tool2,S1,S2,S3 tool
+    class Output result
 ```
 
 ---
