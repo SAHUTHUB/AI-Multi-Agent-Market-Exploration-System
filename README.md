@@ -1,6 +1,7 @@
 # 🚀 AI Multi-Agent Market Exploration System
 
 Welcome to the **Market Intelligence Assistant**, a high-performance prototype designed for global trading firms. This system bridges the gap between static market knowledge and real-time global events, helping international trade teams make informed decisions in volatile markets (e.g., Agricultural Goods, Automotive Parts, and Convenience Food).
+
 ---
 
 ## 🎯 Strategic Purpose & Business Value

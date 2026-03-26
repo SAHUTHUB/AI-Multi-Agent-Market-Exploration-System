@@ -198,7 +198,10 @@ function App() {
                               </div>
                               <h5 className="dev-headline">{dev.headline}</h5>
                               <p className="dev-summary">{dev.summary}</p>
-                              <span className="dev-date">{dev.publishedAt}</span>
+                              <div className="dev-footer">
+                                <span className="dev-source">{dev.source}</span>
+                                <span className="dev-date">{dev.publishedAt}</span>
+                              </div>
                             </div>
                           ))}
                         </div>

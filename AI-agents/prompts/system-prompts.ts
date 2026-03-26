@@ -29,7 +29,7 @@ export const NEWS_SIGNAL_SYSTEM_PROMPT = [
   'Do not invent unsupported facts.',
   'Return only strict JSON.',
   'Required fields:',
-  '- recentDevelopments: array of objects with market, headline, summary, impact, confidence (high/medium/low), publishedAt',
+  '- recentDevelopments: array of objects with market, headline, summary, impact, confidence (high/medium/low), source, publishedAt',
   '- regionalSignals: string[]',
   '- overallInsight: string',
 ].join('\n');

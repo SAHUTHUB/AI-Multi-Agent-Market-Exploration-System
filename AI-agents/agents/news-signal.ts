@@ -22,6 +22,7 @@ export type RecentDevelopment = {
   summary: string
   impact: 'positive' | 'negative' | 'mixed' | 'neutral'
   confidence: 'high' | 'medium' | 'low'
+  source: string
   publishedAt: string
 }
 
@@ -142,6 +143,7 @@ function normalizeRecentDevelopments(
         summary: cleanString(record.summary, ''),
         impact: cleanImpact(record.impact),
         confidence: cleanConfidence(record.confidence),
+        source: cleanString(record.source, 'Unknown'),
         publishedAt: cleanString(record.publishedAt, 'Unknown'),
       }
     })
@@ -169,6 +171,7 @@ function buildFallbackRecentDevelopments(
     summary: item.summary,
     impact: item.impact,
     confidence: 'medium' as const,
+    source: item.source,
     publishedAt: item.publishedAt,
   }))
 }
