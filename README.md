@@ -1,7 +1,3 @@
-จัดเต็มให้ครับ! ไฟล์ `README.md` ฉบับนี้ถูกร่างขึ้นมาในระดับ **Senior AI Engineer** โดยเน้นไปที่การอธิบาย **"Systems Thinking"** และ **"Agentic Workflow"** เพื่อดึงคะแนนในส่วน **System Architecture (25%)** และ **AI Agent Design (25%)** ให้ได้สูงสุดครับ
-
----
-
 # 🚀 AI Multi-Agent Market Exploration System
 
 A high-performance prototype designed to demonstrate **Collaborative AI Intelligence**. This system breaks down complex market research tasks into a multi-agent pipeline, synthesizing internal ground-truth data with real-time external signals.
