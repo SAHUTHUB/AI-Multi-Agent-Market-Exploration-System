@@ -1,7 +1,3 @@
-นี่คือไฟล์ `DATA_SOURCES.md` ฉบับภาษาอังกฤษที่สมบูรณ์แบบ พร้อมแผนภาพ Mermaid Diagram ที่จัดวางอย่างมืออาชีพ คุณสามารถก๊อปปี้โค้ดด้านล่างนี้ไปสร้างไฟล์ได้ทันทีครับ
-
----
-
 # 📊 Data Sources & Intelligence Strategy
 
 This document provides a technical overview of the data architecture, sourcing strategies, and resilience mechanisms implemented in the **AI Multi-Agent Market Exploration System**.
@@ -24,46 +20,26 @@ The following diagram illustrates how data from multiple sources flows through t
 
 ```mermaid
 graph TD
-    %% Define Data Sources
-    subgraph DataSources[Data Sources Layer]
-        JSON[Internal JSON<br/>(Structured Context)]
-        GNews[GNews API<br/>(Dynamic Headlines)]
-        Scrape[Web Scraping<br/>(Fresh Headlines)]
-        Mock[Mock Signals<br/>(Deterministic Testing)]
+    subgraph DataSources [Data Sources Layer]
+        JSON["Internal JSON (Structured)"]
+        GNews["GNews API (Dynamic)"]
+        Scrape["Web Scraping (Fresh)"]
+        Mock["Mock Signals (Deterministic)"]
     end
 
-    %% Define Agent Layer
-    subgraph Agents[AI Agents Layer]
+    subgraph Agents [AI Agents Layer]
         QUA[Query Understanding Agent]
         MRA[Market Research Agent]
         NSA[News Signal Agent]
     end
 
-    %% Define UI
-    User([User Query])
-    UI[Final Insight Report]
-
-    %% Data Flow
-    User -->|Raw Text| QUA
-    QUA -->|Search Hints| NSA
-    QUA -->|Metadata| MRA
-
-    %% Tools and Fetching
-    MRA -->|Fetches| JSON
-    MRA -->|Context| NSA
-
-    NSA -.->|API Call| GNews
-    NSA -.->|Scrapes| Scrape
-    NSA -.->|Reads| Mock
-
-    NSA -->|Synthesized Insights| UI
-    MRA -->|Market Ground Truth| UI
-
-    %% Styling
-    classDef source fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef agent fill:#bbf,stroke:#333,stroke-width:1px;
-    class JSON,GNews,Scrape,Mock source;
-    class QUA,MRA,NSA agent;
+    User([User Query]) --> QUA
+    QUA --> MRA
+    MRA --> NSA
+    NSA -.-> GNews
+    NSA -.-> Scrape
+    NSA -.-> Mock
+    JSON -.-> MRA
 ```
 
 ---
