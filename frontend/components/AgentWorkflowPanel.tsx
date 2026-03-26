@@ -254,11 +254,35 @@ export default function AgentWorkflowPanel({
                 if (newsEntry) {
                   const count = newsEntry.match(/found=(\d+)/)?.[1]
                   const sources = newsEntry.match(/sources=([^,]+(?:, [^,]+)*)/)?.[1]
+                  
+                  let refs: string[] = []
+                  try {
+                    const refsMatch = newsEntry.match(/references=(\[.*\])/)
+                    if (refsMatch) refs = JSON.parse(refsMatch[1])
+                  } catch (e) {}
+
                   dynamicDetailContent = (
                     <div style={{ marginTop: 10, fontSize: 13, color: '#334155' }}>
-                      <p style={{ margin: 0 }}>
+                      <p style={{ margin: 0, marginBottom: 8 }}>
                         Found <strong>{count}</strong> signals from: <span style={{ color: '#2563eb' }}>{sources}</span>
                       </p>
+                      {refs.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {refs.map((ref, i) => (
+                            <span key={i} style={{ 
+                              fontSize: 10, 
+                              color: '#475569', 
+                              background: '#ffffff', 
+                              padding: '2px 8px', 
+                              borderRadius: 4, 
+                              border: '1px solid #e2e8f0',
+                              fontWeight: 500
+                            }}>
+                              {ref}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )
                 }

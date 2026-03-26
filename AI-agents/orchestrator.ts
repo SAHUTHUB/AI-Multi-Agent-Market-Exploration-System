@@ -127,8 +127,9 @@ export class MarketInsightOrchestrator {
     result.executionTrace.push(
       `market_context_result: key_markets=["${marketContext.keyMarkets.join('", "')}"]`
     )
+    const uniqueSources = [...new Set(signalAnalysis.evidence.map(e => e.source))]
     result.executionTrace.push(
-      `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments, sources=${input.dataSource?.join(', ') || 'mock'}`
+      `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments, sources=${input.dataSource?.join(', ') || 'mock'}, references=["${uniqueSources.join('", "')}"]`
     )
 
     const missingKeys: string[] = []
