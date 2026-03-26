@@ -72,6 +72,7 @@ function App() {
     if (e.key === 'Enter' && query.trim() !== '') {
       setIsSearching(true);
       setHasSearched(true);
+      setResults(null); // Clear previous results to restart workflow animation
       try {
         const response = await fetch(`/api/analyze`, {
           method: 'POST',
