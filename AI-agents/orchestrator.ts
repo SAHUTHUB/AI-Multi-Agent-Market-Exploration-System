@@ -131,6 +131,14 @@ export class MarketInsightOrchestrator {
       `news_analysis_result: found=${signalAnalysis.recentDevelopments.length} developments, sources=${input.dataSource?.join(', ') || 'mock'}`
     )
 
+    const missingKeys: string[] = []
+    if (!process.env.GROQ_API_KEY) missingKeys.push('GROQ_API_KEY')
+    if (input.dataSource?.includes('api') && !process.env.GNEWS_API_KEY) missingKeys.push('GNEWS_API_KEY')
+    
+    if (missingKeys.length > 0) {
+      result.executionTrace.push(`warning: missing ${missingKeys.join(', ')}`)
+    }
+
     result.executionTrace.push('workflow_completed')
 
     return result

@@ -166,6 +166,24 @@ export default function AgentWorkflowPanel({
             gap: 14,
           }}
         >
+          {executionTrace.some(t => t.startsWith('warning:')) && (
+            <div style={{ 
+              background: '#fff7ed', 
+              border: '1px solid #fed7aa', 
+              borderRadius: 12, 
+              padding: '12px 16px', 
+              color: '#9a3412',
+              fontSize: 14,
+              display: 'flex',
+              gap: 10,
+              alignItems: 'center',
+              fontWeight: 500,
+              marginBottom: 8
+            }}>
+              <span style={{ fontSize: 18 }}>⚠️</span>
+              {executionTrace.find(t => t.startsWith('warning:'))?.replace('warning: ', 'Note: ')}
+            </div>
+          )}
           {steps.map((step, index) => {
             const state = getStepState({
               stepId: step.id,
