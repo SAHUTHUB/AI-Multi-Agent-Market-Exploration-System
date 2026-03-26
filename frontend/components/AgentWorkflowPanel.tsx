@@ -262,27 +262,56 @@ export default function AgentWorkflowPanel({
                   } catch (e) {}
 
                   dynamicDetailContent = (
-                    <div style={{ marginTop: 10, fontSize: 13, color: '#334155' }}>
-                      <p style={{ margin: 0, marginBottom: 8 }}>
-                        Found <strong>{count}</strong> signals from: <span style={{ color: '#2563eb' }}>{sources}</span>
-                      </p>
-                      {refs.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                          {refs.map((ref, i) => (
-                            <span key={i} style={{ 
-                              fontSize: 10, 
-                              color: '#475569', 
-                              background: '#ffffff', 
-                              padding: '2px 8px', 
-                              borderRadius: 4, 
-                              border: '1px solid #e2e8f0',
-                              fontWeight: 500
-                            }}>
-                              {ref}
-                            </span>
-                          ))}
+                    <div style={{ marginTop: 12, fontSize: 13 }}>
+                      <div style={{ 
+                        background: '#ffffff', 
+                        border: '1px solid #e2e8f0', 
+                        borderRadius: 16, 
+                        padding: '14px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                      }}>
+                        <div style={{ 
+                          color: '#64748b', 
+                          fontSize: 10, 
+                          fontWeight: 700, 
+                          textTransform: 'uppercase', 
+                          letterSpacing: '0.06em', 
+                          marginBottom: 10,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <span>Verified Intelligence Sources</span>
+                          <span style={{ 
+                            background: '#eff6ff', 
+                            color: '#2563eb', 
+                            padding: '2px 6px', 
+                            borderRadius: 6,
+                            fontSize: 9
+                          }}>+{count} Signals</span>
                         </div>
-                      )}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {refs.length > 0 ? refs.map((ref, i) => (
+                            <div key={i} style={{ 
+                              fontSize: 11, 
+                              color: '#1e293b', 
+                              background: '#f8fafc', 
+                              padding: '5px 10px', 
+                              borderRadius: 8, 
+                              border: '1px solid #e2e8f0',
+                              fontWeight: 600,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 6
+                            }}>
+                              <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#3b82f6' }}></div>
+                              {ref}
+                            </div>
+                          )) : (
+                            <span style={{ color: '#94a3b8', fontSize: 11, fontStyle: 'italic' }}>Searching for external signals...</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )
                 }
