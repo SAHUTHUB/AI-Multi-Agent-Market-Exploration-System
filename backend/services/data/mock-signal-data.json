@@ -58,5 +58,105 @@
     "impact": "mixed",
     "source": "mock-signal-data.json",
     "publishedAt": "2026-03-26"
+  },
+  {
+    "country": "Japan",
+    "topic": "Car spare parts",
+    "region": "East Asia",
+    "headline": "Breakthrough in solid-state battery scalability",
+    "summary": "Major Japanese OEM announces a breakthrough in manufacturing solid-state battery components, promising to reduce production costs by 20%.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-22"
+  },
+  {
+    "country": "Mexico",
+    "topic": "Car spare parts",
+    "region": "North America",
+    "headline": "Nearshoring boom strains local logistics",
+    "summary": "While nearshoring continues to bring record foreign investment to Mexican auto parts manufacturers, local infrastructure and logistics are struggling to keep up.",
+    "impact": "mixed",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-23"
+  },
+  {
+    "country": "South Korea",
+    "topic": "Car spare parts",
+    "region": "East Asia",
+    "headline": "Labor strikes disrupt sensor supply chains",
+    "summary": "A sudden labor strike at a major tier-1 supplier has temporarily halted the production of autonomous driving sensors, affecting global delivery schedules.",
+    "impact": "negative",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-25"
+  },
+  {
+    "country": "India",
+    "topic": "Car spare parts",
+    "region": "South Asia",
+    "headline": "Government PLI scheme boosts export targets",
+    "summary": "The Production Linked Incentive (PLI) scheme has resulted in a 15% year-on-year increase in automotive component exports from Indian manufacturers.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-20"
+  },
+  {
+    "country": "United Kingdom",
+    "topic": "Convenience food products",
+    "region": "Europe",
+    "headline": "New border checks delay fresh ingredient imports",
+    "summary": "Implementation of new post-Brexit biometric border checks has caused delays in importing fresh produce, squeezing margins for UK ready-meal manufacturers.",
+    "impact": "negative",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-26"
+  },
+  {
+    "country": "Japan",
+    "topic": "Convenience food products",
+    "region": "East Asia",
+    "headline": "Unmanned convenience stores reduce operational costs",
+    "summary": "The rapid expansion of AI-driven unmanned konbini stores is significantly reducing labor costs and extending operational hours for major food retail chains.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-18"
+  },
+  {
+    "country": "Brazil",
+    "topic": "Convenience food products",
+    "region": "South America",
+    "headline": "Proposed tax on ultra-processed foods rattles investors",
+    "summary": "A new health bill proposing a 10% tax on ultra-processed and high-sodium convenience foods is currently being debated in the Brazilian senate.",
+    "impact": "negative",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-24"
+  },
+  {
+    "country": "Brazil",
+    "topic": "Agricultural products",
+    "region": "South America",
+    "headline": "Severe drought threatens central soybean yields",
+    "summary": "Unprecedented dry weather in central-west Brazil is raising alarms about potential drops in soybean yields, prompting global price volatility.",
+    "impact": "negative",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-21"
+  },
+  {
+    "country": "Netherlands",
+    "topic": "Agricultural products",
+    "region": "Europe",
+    "headline": "Nitrogen emission policies spark logistics disruptions",
+    "summary": "Ongoing protests over strict nitrogen emission regulations have intermittently blocked access to key agricultural export hubs.",
+    "impact": "mixed",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-23"
+  },
+  {
+    "country": "Australia",
+    "topic": "Agricultural products",
+    "region": "Oceania",
+    "headline": "Record wheat harvest secured for Asian markets",
+    "summary": "Favorable rainfalls have resulted in a bumper wheat crop, securing Australia's export commitments to key Southeast Asian and East Asian markets.",
+    "impact": "positive",
+    "source": "mock-signal-data.json",
+    "publishedAt": "2026-03-25"
   }
 ]

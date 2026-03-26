@@ -68,5 +68,145 @@
       "Advanced cold-chain distribution network."
     ],
     "source": "mock-market-data.json"
+  },
+  {
+    "country": "Japan",
+    "topic": "Car spare parts",
+    "region": "East Asia",
+    "overviewPoints": [
+      "Global leader in automotive manufacturing and reliable OEM supply.",
+      "Pioneer of lean manufacturing and just-in-time inventory systems."
+    ],
+    "industrySignals": [
+      "Increasing investment in hybrid and EV powertrain components.",
+      "Strong export network across Asia and North America."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Mexico",
+    "topic": "Car spare parts",
+    "region": "North America",
+    "overviewPoints": [
+      "Major nearshoring destination for North American automotive supply chains.",
+      "Highly integrated with US and Canadian manufacturing hubs."
+    ],
+    "industrySignals": [
+      "Rapid growth in Tier 1 and Tier 2 supplier facilities.",
+      "Shift towards EV component assembly to meet US market demands."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "South Korea",
+    "topic": "Car spare parts",
+    "region": "East Asia",
+    "overviewPoints": [
+      "High-tech automotive hub with a focus on smart vehicle components.",
+      "Home to major global automotive conglomerates and suppliers."
+    ],
+    "industrySignals": [
+      "Dominant player in the global EV battery supply chain.",
+      "Heavy R&D investment in autonomous driving sensors and parts."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "India",
+    "topic": "Car spare parts",
+    "region": "South Asia",
+    "overviewPoints": [
+      "Rapidly expanding manufacturing base for both OEM and aftermarket parts.",
+      "Cost-competitive production hub with a growing domestic automotive market."
+    ],
+    "industrySignals": [
+      "Government incentives driving local manufacturing and exports.",
+      "Increasing focus on two-wheeler and compact car components."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "United Kingdom",
+    "topic": "Convenience food products",
+    "region": "Europe",
+    "overviewPoints": [
+      "Highly mature market for chilled and ready-to-eat meals.",
+      "Supermarket-led innovation in private label convenience foods."
+    ],
+    "industrySignals": [
+      "Rising consumer demand for plant-based and health-conscious ready meals.",
+      "Supply chain adaptations post-Brexit to ensure fresh ingredient availability."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Japan",
+    "topic": "Convenience food products",
+    "region": "East Asia",
+    "overviewPoints": [
+      "World-class convenience store (konbini) ecosystem driving product innovation.",
+      "Extremely high standards for packaging, freshness, and seasonal variety."
+    ],
+    "industrySignals": [
+      "Aging population increasing reliance on easily prepared, nutritious meals.",
+      "Technological advancements in food preservation and automated distribution."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Brazil",
+    "topic": "Convenience food products",
+    "region": "South America",
+    "overviewPoints": [
+      "Growing urban middle class driving demand for fast and convenient meal solutions.",
+      "Large domestic food processing industry leveraging local agricultural abundance."
+    ],
+    "industrySignals": [
+      "Expansion of modern retail and delivery app ecosystems boosting convenience food sales.",
+      "Increasing regulatory focus on ultra-processed food labeling."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Brazil",
+    "topic": "Agricultural products",
+    "region": "South America",
+    "overviewPoints": [
+      "Agricultural powerhouse and top global exporter of soybeans, coffee, and beef.",
+      "Massive arable land area supporting year-round production cycles."
+    ],
+    "industrySignals": [
+      "Adoption of precision agriculture and ag-tech to improve yields.",
+      "Ongoing scrutiny and policy shifts regarding sustainable farming and deforestation."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Netherlands",
+    "topic": "Agricultural products",
+    "region": "Europe",
+    "overviewPoints": [
+      "Second-largest agricultural exporter globally despite small landmass.",
+      "Pioneer in high-tech, high-yield greenhouse farming and sustainable practices."
+    ],
+    "industrySignals": [
+      "Intensive focus on circular agriculture and reducing nitrogen emissions.",
+      "Major logistics hub for European agricultural imports and exports."
+    ],
+    "source": "mock-market-data.json"
+  },
+  {
+    "country": "Australia",
+    "topic": "Agricultural products",
+    "region": "Oceania",
+    "overviewPoints": [
+      "Major supplier of premium wheat, meat, and dairy to Asian markets.",
+      "Highly efficient, large-scale farming operations adapted to arid conditions."
+    ],
+    "industrySignals": [
+      "Vulnerability to climate extremes driving investment in drought-resistant crops.",
+      "Strong emphasis on supply chain traceability and food safety standards."
+    ],
+    "source": "mock-market-data.json"
   }
 ]
