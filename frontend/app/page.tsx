@@ -146,7 +146,7 @@ function App() {
           className={`source-pill ${dataSource.includes('api') ? 'active' : ''}`}
           onClick={() => toggleSource('api')}
         >
-          GNews API
+          External News
         </button>
         <button 
           className={`source-pill ${dataSource.includes('scrape') ? 'active' : ''}`}
