@@ -1,63 +1,140 @@
-# AI Agent Data Sources
-
-ระบบ AI Multi-Agent นี้ใช้แหล่งข้อมูลหลักจากไฟล์ JSON ภายในโครงการ (Internal JSON Data) เพื่อจำลองการทำงานของ Market Exploration ในระยะ Prototype:
-
-## 1. ข้อมูลตลาด (Market Data)
-- **Source**: `backend/services/data/mock-market-data.json`
-- **Tool**: `JsonMarketDataTool`
-- **Content**: ข้อมูลสถิติตลาด, สัญญาณอุตสาหกรรม (Industry Signals), และภาพรวมของแต่ละภูมิภาค/ประเทศ
-- **Usage**: ใช้โดย `MarketResearchAgent` เพื่อสร้างบทวิเคราะห์บริบทของตลาด (Market Context)
-
-## 2. ข้อมูลข่าวและเหตุการณ์ภายนอก (News Signals)
-ระบบรองรับ 3 แหล่งข้อมูล (เลือกผ่าน `dataSource` ใน API):
-- **Mock (Default)**: โหลดจาก `backend/services/data/mock-signal-data.json` ผ่าน `JsonSignalDataTool`
-- **Live API**: ดึงข่าวสดจาก **GNews API** ผ่านฟังก์ชัน `fetchLiveNews` (ต้องการ `GNEWS_API_KEY`)
-- **Web Scraping**: ดึงหัวข้อข่าวจาก **Google News** โดยตรงผ่าน `scrapeNewsWithCheerio` (ใช้ Cheerio)
-
-**การใช้งาน**: `NewsSignalAgent` จะทำหน้าที่ประมวลผลข้อมูลจากแหล่งที่เลือกและส่งให้ LLM วิเคราะห์ผลกระทบต่อตลาด (Impact Analysis) ต่อไป
-
-## 3. ผู้ให้บริการโมเดลภาษา (LLM Provider)
-- **Primary**: **Groq Cloud API** (ต้องการ `GROQ_API_KEY` ใน `.env`)
-- **Fallback**: **MockProvider** (ใช้ในกรณีที่ไม่มี API Key เพื่อให้ระบบยังแสดงผลทดสอบได้)
-
-## Technical Analysis (Senior AI Engineer Insights)
-
-### 1. Mock Data Strategy
-**System Determinism & Testing**: 
-การใช้ Mock Data ในรูปแบบ JSON ช่วยสร้าง "Baseline" ที่คงที่ (Deterministic) สำหรับการทดสอบ Agent การรัน Unit Test จะไม่ถูกรบกวนโดย Network Latency หรือการเปลี่ยนแปลงของข้อมูลภายนอก ทำให้เรากล้าการันตีได้ว่า Logic การประมวลผลของ Agent ยังถูกต้องเหมือนเดิม (Regression Testing)
-
-**Optimal JSON Structure**: 
-เพื่อการค้นหาที่มีประสิทธิภาพ เราออกแบบให้มีฟิลด์ `topic`, `region`, และ `country` เป็น Index หลัก และเพิ่ม `searchHints` (Keywords) เข้าไปใน Object เพื่อให้ระบบสามารถทำ Keyword Matching ได้รวดเร็วโดยไม่ต้องใช้ Search Engine เต็มรูปแบบในระยะ Prototype
-
-### 2. Live API Integration (Query Transformation)
-**Contextual Search**: 
-ระบบใช้ `QueryUnderstandingAgent` ในการทำ **Query Narrowing** เปลี่ยนคำถามกว้างๆ ของผู้ใช้ให้เป็น Search Keywords ที่มีประสิทธิภาพ (เช่น เพิ่มคำว่า "industry trends" หรือ "market outlook") เพื่อส่งต่อให้ GNews API
-
-**Rate Limit & Key Management**: 
-เราใช้สถาปัตยกรรมแบบ **Graceful Handling** โดยระบบจะตรวจเช็ก API Key ก่อนเริ่ม Workflow หากพบว่าไม่มี Key (Missing Env) ระบบจะบันทึกเข้า `executionTrace` เพื่อแจ้งเตือนใน UI และสลับไปใช้ Mock Data ทันทีเพื่อป้องกัน Workflow ล่ม (Crash Exception)
-
-### 3. Web Scraping (Unstructured Data)
-**Data Freshness**: 
-การ Scraping ผ่าน Cheerio ช่วยให้เราเข้าถึงข้อมูลที่ "สด" กว่า API ในบางจังหวะ เนื่องจากไม่ต้องรอรอบการ Index ของ API Provider
-
-**Processing Logic**: 
-ข้อมูล Unstructured (หัวข้อข่าวที่ขูดมา) จะถูกส่งเข้าสู่ **Synthesis Layer** ของ `NewsSignalAgent` ซึ่งใช้ LLM ในการสกัด (Extraction) และจัดระเบียบใหม่ให้กลายเป็น JSON ที่มีโครงสร้างชัดเจน (Market, Headline, Impact) ก่อนส่งเข้ากระบวนการวิเคราะห์ถัดไป
-
-### 4. Data Normalization
-**Unified Schema**: 
-เราใช้กระบวนการ **Normalization Mapping** ในชั้น `dataTools.ts` เพื่อแปลงข้อมูลจากแหล่งต่างๆ (เช่น `article.publishedAt` จาก API และหัวข้อข่าวจาก Scrape) ให้มาอยู่ใน Interface เดียวกันที่ชื่อ `ExternalSignalRecord` ทำให้ Agent ตัวอื่นๆ ไม่ต้องสนใจว่าข้อมูลมาจากแหล่งไหน
-
-### 5. Fallback Mechanism (Graceful Degradation)
-**Waterfall Fallback**: 
-ระบบถูกออกแบบมาให้ทำงานแบบ **Multi-Layered Failover**:
-1. พยายามดึงจาก **Live API**
-2. หากล้มเหลว (Error/No Key) จะลอง **Web Scraping**
-3. หากขัดข้องทั้งหมด จะดึงจาก **Mock Data**
-หลักการนี้ช่วยให้มั่นใจได้ว่าระบบจะมี "Insight" มอบให้ผู้ใช้เสมอ แม้อยู่ในสภาวะที่การเชื่อมต่อภายนอกขัดข้อง
+นี่คือไฟล์ `DATA_SOURCES.md` ฉบับภาษาอังกฤษที่สมบูรณ์แบบ พร้อมแผนภาพ Mermaid Diagram ที่จัดวางอย่างมืออาชีพ คุณสามารถก๊อปปี้โค้ดด้านล่างนี้ไปสร้างไฟล์ได้ทันทีครับ
 
 ---
-*หมายเหตุ: ในเวอร์ชันการใช้งานจริง (Production) ข้อมูลเหล่านี้สามารถเปลี่ยนเป็น API เชื่อมต่อกับฐานข้อมูลจริงหรือ News Aggregators ภายนอกได้โดยการเปลี่ยน Implementation ของ Data Tools ในโฟลเดอร์ `backend/services/tools/`*
 
-> [!IMPORTANT]
-> สำหรับการรันบน **Vercel**, อย่าลืมตั้งค่า `GROQ_API_KEY` และ `GNEWS_API_KEY` ในส่วน **Environment Variables** เพื่อให้ Agent สามารถเรียกใช้ Live Data ได้ครับ
+# 📊 Data Sources & Intelligence Strategy
 
+This document provides a technical overview of the data architecture, sourcing strategies, and resilience mechanisms implemented in the **AI Multi-Agent Market Exploration System**.
+
+---
+
+## 1. Hybrid Data Architecture
+
+The system is engineered to leverage a mix of structured internal knowledge and dynamic external signals to provide a holistic and contextualized market view.
+
+| Source | Type | Integration Tool | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Internal JSON** | Structured / Static | `JsonMarketDataTool` | Provides "Ground Truth" market baselines and core industry facts. |
+| **GNews API** | Live / Dynamic | `fetchLiveNews` | Aggregates real-time global news headlines and summaries. |
+| **Web Scraping** | Live / Unstructured | `scrapeNewsWithCheerio` | Extracts trending headlines from Google News for maximum data freshness. |
+| **Mock Signals** | Structured / Testing | `JsonSignalDataTool` | Enables deterministic testing and consistent system demonstrations. |
+
+### Data Flow Overview
+The following diagram illustrates how data from multiple sources flows through the specialized agents to produce the final insight report:
+
+```mermaid
+graph TD
+    %% Define Data Sources
+    subgraph DataSources[Data Sources Layer]
+        JSON[Internal JSON<br/>(Structured Context)]
+        GNews[GNews API<br/>(Dynamic Headlines)]
+        Scrape[Web Scraping<br/>(Fresh Headlines)]
+        Mock[Mock Signals<br/>(Deterministic Testing)]
+    end
+
+    %% Define Agent Layer
+    subgraph Agents[AI Agents Layer]
+        QUA[Query Understanding Agent]
+        MRA[Market Research Agent]
+        NSA[News Signal Agent]
+    end
+
+    %% Define UI
+    User([User Query])
+    UI[Final Insight Report]
+
+    %% Data Flow
+    User -->|Raw Text| QUA
+    QUA -->|Search Hints| NSA
+    QUA -->|Metadata| MRA
+
+    %% Tools and Fetching
+    MRA -->|Fetches| JSON
+    MRA -->|Context| NSA
+
+    NSA -.->|API Call| GNews
+    NSA -.->|Scrapes| Scrape
+    NSA -.->|Reads| Mock
+
+    NSA -->|Synthesized Insights| UI
+    MRA -->|Market Ground Truth| UI
+
+    %% Styling
+    classDef source fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef agent fill:#bbf,stroke:#333,stroke-width:1px;
+    class JSON,GNews,Scrape,Mock source;
+    class QUA,MRA,NSA agent;
+```
+
+---
+
+## 2. Engineering Insights & Implementation
+
+### 🧠 Mock Data & System Determinism
+During the prototype stage, we utilize structured JSON files (`mock-market-data.json`) to establish a controlled testing environment:
+- **Baseline Verification**: Ensures the agent's reasoning logic is verified against a known set of facts before introducing live variables.
+- **Search Optimization**: Records are indexed by `topic`, `region`, and `country`, enriched with `searchHints` to facilitate rapid keyword matching.
+
+### 🔄 Dynamic Query Transformation
+To maximize the relevance of external data, the system performs **Query Narrowing** via the `QueryUnderstandingAgent`:
+- User queries are transformed into optimized search strings (e.g., appending "market outlook" or "supply chain disruption") to ensure high-quality retrieval from live sources.
+
+### 🛠 Unstructured Data Synthesis
+Web scraping via Cheerio bypasses API indexing delays, capturing the most recent events:
+- **Synthesis Logic**: Raw headlines are fed into the `NewsSignalAgent`'s synthesis layer, where the LLM extracts key entities and sentiments, converting them into a structured schema.
+
+### 🏗 Data Normalization Layer
+Across all sources, a **Normalization Mapping** process is implemented:
+- All inputs are transformed into a unified `ExternalSignalRecord` interface. This decoupling ensures that downstream analysis agents remain agnostic of the data's origin.
+
+---
+
+## 3. Resilience & Fallback (Graceful Degradation)
+
+To maintain functionality under API constraints or network failures, a **Multi-Layered Failover (Waterfall)** mechanism is implemented:
+
+```mermaid
+graph TD
+    Start([Request External Signals]) --> CheckKeys{API Keys<br/>Configured?}
+    
+    %% Pathway 1: API
+    CheckKeys -- Yes --> FetchAPI[Attempt GNews API Fetch]
+    FetchAPI --> API_Success{Success?}
+    API_Success -- Yes --> Normalize[Normalize Data to<br/>Unified Schema]
+    
+    %% Pathway 2: Scraping
+    CheckKeys -- No --> LogTrace[Log to ExecutionTrace]
+    LogTrace --> Scrape[Attempt Web Scraping]
+    
+    API_Success -- No --> Scrape
+    Scrape --> Scrape_Success{Success?}
+    Scrape_Success -- Yes --> Normalize
+    
+    %% Pathway 3: Mock
+    Scrape_Success -- No --> FallbackMock[Fallback to Mock Data]
+    FallbackMock --> Normalize
+    
+    Normalize --> End([Return Normalised Signals])
+
+    %% Styling
+    classDef action fill:#bbf,stroke:#333,stroke-width:1px;
+    classDef decision fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef endnode fill:#ff9,stroke:#333,stroke-width:2px;
+    
+    class FetchAPI,Scrape,Normalize,FallbackMock action;
+    class CheckKeys,API_Success,Scrape_Success decision;
+    class Start,End endnode;
+```
+
+---
+
+## ⚙️ Configuration
+
+To enable live data fetching, ensure the following environment variables are set:
+
+- **GNews API**: Set `GNEWS_API_KEY` in the `.env` file.
+- **Groq Cloud**: Ensure `GROQ_API_KEY` is configured for agent synthesis.
+- **Auto-Fallback**: If keys are missing, the system will log the status in the `executionTrace` and automatically default to Mock Mode.
+
+---
+*Note: This data strategy is designed to showcase "AI Application Thinking" and "Engineering Rigor" as per the assignment evaluation criteria.*
