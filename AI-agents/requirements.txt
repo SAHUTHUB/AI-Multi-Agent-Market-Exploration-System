@@ -1,0 +1,4 @@
+pydantic
+aiohttp
+python-dotenv
+openai
