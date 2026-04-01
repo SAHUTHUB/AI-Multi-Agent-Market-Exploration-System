@@ -1,49 +1,9 @@
 import { NextResponse } from 'next/server'
 import { RequestSchema } from '../../../../backend/schemas/request'
-import { QueryUnderstandingAgent } from '../../../../AI-agents/agents/query-understanding'
-import { MarketResearchAgent } from '../../../../AI-agents/agents/market-research'
-import { NewsSignalAgent } from '../../../../AI-agents/agents/news-signal'
-import { MarketInsightOrchestrator, type MarketInsightWorkflowInput } from '../../../../AI-agents/orchestrator'
-import { GroqProvider } from '../../../../backend/services/providers/llm'
-import { MockProvider } from '../../../../backend/services/providers/mock'
-import { JsonMarketDataTool } from '../../../../backend/services/tools/market-data-tool'
-import { JsonSignalDataTool } from '../../../../backend/services/tools/signal-data-tool'
+import { spawn } from 'child_process'
+import path from 'path'
 
 export const runtime = 'nodejs'
-
-function createProvider() {
-  if (process.env.GROQ_API_KEY) {
-    return new GroqProvider()
-  }
-
-  return new MockProvider()
-}
-
-function createOrchestrator() {
-  const provider = createProvider()
-  const marketDataTool = new JsonMarketDataTool()
-  const signalDataTool = new JsonSignalDataTool()
-
-  const queryUnderstandingAgent = new QueryUnderstandingAgent({
-    provider,
-  })
-
-  const marketResearchAgent = new MarketResearchAgent({
-    provider,
-    marketDataTool,
-  })
-
-  const newsSignalAgent = new NewsSignalAgent({
-    provider,
-    signalDataTool,
-  })
-
-  return new MarketInsightOrchestrator({
-    queryUnderstandingAgent,
-    marketResearchAgent,
-    newsSignalAgent,
-  })
-}
 
 export async function POST(request: Request) {
   try {
@@ -59,10 +19,64 @@ export async function POST(request: Request) {
       )
     }
 
-    const { query, dataSource } = parsed.data
+    const inputData = parsed.data
 
-    const orchestrator = createOrchestrator()
-    const result = await orchestrator.run(parsed.data as MarketInsightWorkflowInput)
+    // Path to the Python orchestrator script
+    // Since Next.js is in frontend/, we go up one directory to AI-agents
+    const scriptDir = path.resolve(process.cwd(), '../AI-agents')
+    const scriptPath = path.resolve(scriptDir, 'agent_orchestrator.py')
+
+    const result = await new Promise((resolve, reject) => {
+      const pythonProcess = spawn('python3', [scriptPath], {
+        cwd: scriptDir, // Ensure python executes starting from AI-agents directory so local modules resolve properly
+        env: {
+          ...process.env,
+        }
+      })
+
+      let dataBuffer = ''
+      let errorBuffer = ''
+
+      pythonProcess.stdout.on('data', (chunk) => {
+        dataBuffer += chunk.toString()
+      })
+
+      pythonProcess.stderr.on('data', (chunk) => {
+        errorBuffer += chunk.toString()
+      })
+
+      pythonProcess.on('close', (code) => {
+        if (code !== 0 && !dataBuffer.trim()) {
+          reject(new Error(`Python process failed with code ${code}\nError trace: ${errorBuffer}`))
+          return
+        }
+        
+        try {
+          // Resolve JSON from stdout cleanly
+          const jsonString = dataBuffer.trim()
+          if (!jsonString) {
+            reject(new Error(`No JSON output received.\nError trace: ${errorBuffer}`))
+            return
+          }
+          const parsedOutput = JSON.parse(jsonString)
+          if (parsedOutput.error && Object.keys(parsedOutput).length === 1) {
+            reject(new Error(parsedOutput.error))
+          } else {
+            resolve(parsedOutput)
+          }
+        } catch (e) {
+          reject(new Error(`Failed to parse Python Output as JSON.\nRaw output: ${dataBuffer}\nError trace: ${errorBuffer}`))
+        }
+      })
+
+      pythonProcess.on('error', (err) => {
+        reject(new Error(`Failed to spawn Python process: ${err.message}`))
+      })
+
+      // Send the strict JSON input over sys.stdin
+      pythonProcess.stdin.write(JSON.stringify(inputData))
+      pythonProcess.stdin.end()
+    })
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {
