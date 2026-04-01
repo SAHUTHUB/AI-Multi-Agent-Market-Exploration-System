@@ -218,7 +218,15 @@ function App() {
                   </div>
                 ) : (
                   <div className="no-results">
-                    <p>No insights found for "{query}". Try adjusting your keywords to something like "agricultural products".</p>
+                    {results && results.error ? (
+                        <div style={{ color: '#ff4c4c', border: '1px solid #ff4c4c', padding: '15px', borderRadius: '8px', background: 'rgba(255, 76, 76, 0.1)'}}>
+                            <h4>System Exception</h4>
+                            <p>{results.error}</p>
+                            <small>Please check your environment variables or terminal output for more details.</small>
+                        </div>
+                    ) : (
+                        <p>No insights found for "{query}". Try adjusting your keywords to something like "agricultural products".</p>
+                    )}
                   </div>
                 )}
               </div>
