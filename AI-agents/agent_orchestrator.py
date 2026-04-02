@@ -11,7 +11,8 @@ load_dotenv()
 from models import (
     MarketInsightWorkflowInput, 
     MarketInsightWorkflowResult,
-    EvidenceRecord
+    EvidenceRecord,
+    RecentDevelopment
 )
 from providers import LLMProvider
 from tools import MarketDataTool, SignalDataTool
@@ -93,6 +94,30 @@ class MarketInsightOrchestrator:
             executionTrace=execution_trace
         )
 
+def get_mock_fallback(query: str, reason: str) -> MarketInsightWorkflowResult:
+    return MarketInsightWorkflowResult(
+        topic=query,
+        region="Global",
+        keyMarkets=["Mock Market A", "Mock Market B"],
+        marketInsights=f"[MOCK DATA] Please set a valid GROQ_API_KEY to see real AI insights. ({reason})",
+        industryContext=["Mock industry trend 1", "Mock industry trend 2"],
+        recentDevelopments=[
+            RecentDevelopment(
+                market="Global",
+                headline="⚠️ API Setup Required",
+                summary=f"The system encountered an API issue: {reason}. It is displaying static mock data instead.",
+                impact="neutral",
+                confidence="medium",
+                source="System Warning",
+                publishedAt="Now"
+            )
+        ],
+        regionalSignals=["Mock Signal 1", "Mock Signal 2"],
+        overallInsight="[MOCK DATA] You are viewing placeholder data. Update your environment variables to enable the AI Agents.",
+        evidence=[],
+        executionTrace=[f"warning: API fallback triggered. Reason: {reason}"]
+    )
+
 async def main():
     try:
         # 1. Read input from stdin
@@ -107,16 +132,19 @@ async def main():
         
         # 3. Initialize orchestrator and run
         orchestrator = MarketInsightOrchestrator()
-        result = await orchestrator.run(workflow_input)
+        
+        try:
+            result = await orchestrator.run(workflow_input)
+        except Exception as api_err:
+            if "GROQ" in str(api_err).upper() or "API" in str(api_err).upper():
+                result = get_mock_fallback(workflow_input.query, str(api_err))
+            else:
+                raise api_err
         
         # 4. Print EXACTLY the JSON result to stdout
-        # Print with populate_by_name handles the conversion of Python fields to intended alias if needed
-        # In this case fields are named as camelCase exactly, so model_dump is straightforward.
         sys.stdout.write(json.dumps(result.model_dump(), indent=2))
         
     except Exception as e:
-        # Print errors to stdout as valid JSON with "error" key so Node.js can parse it and handle 500 cleanly
-        # Or print to stderr for debug. Based on requirement, we must output JSON format at all times for Node.js.
         error_json = json.dumps({"error": str(e)})
         sys.stdout.write(error_json)
 

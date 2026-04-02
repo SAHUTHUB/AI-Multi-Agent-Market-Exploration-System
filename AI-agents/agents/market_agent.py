@@ -101,4 +101,4 @@ class MarketResearchAgent:
             max_tokens=700
         )
 
-        return normalize(raw_dict)
+        return normalize(raw_dict) 
