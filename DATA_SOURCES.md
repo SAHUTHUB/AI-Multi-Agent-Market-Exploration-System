@@ -10,117 +10,92 @@ The system is engineered to leverage a mix of structured internal knowledge and 
 
 | Source | Type | Integration Tool | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Internal JSON** | Structured / Static | `JsonMarketDataTool` | Provides "Ground Truth" market baselines and core industry facts. |
-| **GNews API** | Live / Dynamic | `fetchLiveNews` | Aggregates real-time global news headlines and summaries. |
-| **Web Scraping** | Live / Unstructured | `scrapeNewsWithCheerio` | Extracts trending headlines from Google News for maximum data freshness. |
-| **Mock Signals** | Structured / Testing | `JsonSignalDataTool` | Enables deterministic testing and consistent system demonstrations. |
+| **Rich Internal Data** | Structured Library | `MarketDataTool` | Provides "Ground Truth" market baselines, industry players, and regional visions. |
+| **Finlight v2 API** | Live / Dynamic | `FinlightNewsTool` | Primary source for high-quality financial news and global market headlines. |
+| **Deep Web Scraper** | Live / Technical | `WebScrapingTool` | Deep-dives into technical data points (e.g., specific factory-gate price trends or logistics delays). |
+| **Rich Mocks** | Structured / Testing | `SignalDataTool` | Provides high-fidelity curated data for demo and testing purposes. |
 
 ### Data Flow Overview
-The following diagram illustrates how data from multiple sources flows through the specialized agents to produce the final insight report:
 
 ```mermaid
-graph TD
+graph LR
     %% Define Styles
-    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef agent fill:#fff4e5,stroke:#d4a017,stroke-width:2px
-    classDef tool fill:#f5f5f5,stroke:#333,stroke-dasharray: 5 5
-    classDef result fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef agent fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff
+    classDef tool fill:#94a3b8,stroke:#475569,stroke-dasharray: 5 5,color:#fff
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px
 
-    %% Flow
-    Input([User Query]) --> QUA
-
-    subgraph Agents [Multi-Agent Reasoning Chain]
-        QUA[1. Query Understanding Agent]
-        MRA[2. Market Research Agent]
-        NSA[3. News Signal Agent]
-        
-        %% Sequence & Context Passing
-        QUA -->|Structured Metadata| MRA
-        MRA -->|Market Context| NSA
-        QUA -->|Search Hints| NSA
+    subgraph "Knowledge Retrieval (Step 2)"
+        Agent2[Market Agent] --- Tool1[MarketDataTool]
+        Tool1 --- S1[(Rich Ground Truth Library)]
     end
 
-    %% Tools Interaction
-    MRA --- Tool1[(Internal Market Data)]
-    
-    NSA --- Tool2{Data Fetcher}
-    subgraph ExternalSources [External & Mock Signals]
-        direction LR
-        S1[GNews API]
-        S2[Web Scraper]
-        S3[Mock Signals]
+    subgraph "Signal Retrieval (Step 3)"
+        Agent3[News Agent] --- Tool2[Signal Fetcher]
+        Tool2 --- P1[Finlight v2 API]
+        Tool2 --- P2[Deep Web Scraper]
+        Tool2 --- P3[Rich Mock Signals]
     end
-    Tool2 --> S1
-    Tool2 --> S2
-    Tool2 --> S3
-
-    %% Final Output
-    NSA --> Output([Final Insight Report])
 
     %% Assign Classes
-    class Input user
-    class QUA,MRA,NSA agent
-    class Tool1,Tool2,S1,S2,S3 tool
-    class Output result
+    class Agent2,Agent3 agent
+    class Tool1,Tool2 tool
+    class S1,P1,P2,P3 source
 ```
 
 ---
 
-## 2. Engineering Insights & Implementation
+## 2. Intelligence Strategies & Implementation
 
-### 🧠 Mock Data & System Determinism
-During the prototype stage, we utilize structured JSON files (`mock-market-data.json`) to establish a controlled testing environment:
-- **Baseline Verification**: Ensures the agent's reasoning logic is verified against a known set of facts before introducing live variables.
-- **Search Optimization**: Records are indexed by `topic`, `region`, and `country`, enriched with `searchHints` to facilitate rapid keyword matching.
+### 🏥 Rich Mock Data Library
+Instead of simple generic strings, the system uses a **Curated Market Library** (`RICH_MOCK_DATA`) keyed by `(region, topic_category)`.
+*   **Categories**: Automotive, EV, Electronics, Agriculture, Textiles, Pharma, Energy, etc.
+*   **Depth**: Includes specific figures (e.g., *"USD 4.2B market size"*), competitor names (*"Al-Jomaih AutoWorld"*), and regional policy links (*"Vision 2030"*).
+*   **Result**: Allows the LLM to perform high-fidelity reasoning even in "Mock Mode".
 
-### 🔄 Dynamic Query Transformation
-To maximize the relevance of external data, the system performs **Query Narrowing** via the `QueryUnderstandingAgent`:
-- User queries are transformed into optimized search strings (e.g., appending "market outlook" or "supply chain disruption") to ensure high-quality retrieval from live sources.
+### 🌊 Finlight v2 News Integration
+The **Finlight News API** provides real-time financial articles.
+*   **Keyword Optimization**: The system uses `searchHints` (extracted from the user's intent) to query the API for maximum relevance.
+*   **Localization**: When a region is detected, the system maps it to specific **ISO Country Codes** to filter news by geography.
 
-### 🛠 Unstructured Data Synthesis
-Web scraping via Cheerio bypasses API indexing delays, capturing the most recent events:
-- **Synthesis Logic**: Raw headlines are fed into the `NewsSignalAgent`'s synthesis layer, where the LLM extracts key entities and sentiments, converting them into a structured schema.
-
-### 🏗 Data Normalization Layer
-Across all sources, a **Normalization Mapping** process is implemented:
-- All inputs are transformed into a unified `ExternalSignalRecord` interface. This decoupling ensures that downstream analysis agents remain agnostic of the data's origin.
+### 🕵️‍♂️ Deep Web Scraper (Deep Intelligence)
+The `WebScrapingTool` simulates an "Active Intelligent Agent" that goes beyond general news.
+*   **Targeting**: Focusing on technical insights like *"Logistics Cost Reductions"* or *"Tier-3 Supplier Pricing Dynamics"*.
+*   **Output**: Returns `[DEEP RESEARCH]` records that provide a higher level of analytical detail than standard news headlines.
 
 ---
 
 ## 3. Resilience & Fallback (Graceful Degradation)
 
-To maintain functionality under API constraints or network failures, a **Multi-Layered Failover (Waterfall)** mechanism is implemented:
+To maintain functionality under API constraints or connectivity issues, a **Waterfall Failover Logic** is implemented in the `NewsSignalAgent`:
 
 ```mermaid
 graph TD
-    Start([Request External Signals]) --> CheckKeys{API Keys<br/>Configured?}
+    Start([Signal Retrieval Request]) --> InputSources{Check Selected<br/>Data Sources}
     
     %% Pathway 1: API
-    CheckKeys -- Yes --> FetchAPI[Attempt GNews API Fetch]
+    InputSources -- API --> FetchAPI[Attempt Finlight v2 API]
     FetchAPI --> API_Success{Success?}
-    API_Success -- Yes --> Normalize[Normalize Data to<br/>Unified Schema]
+    API_Success -- Yes --> Normalize[Normalize to Unified Schema]
     
-    %% Pathway 2: Scraping
-    CheckKeys -- No --> LogTrace[Log to ExecutionTrace]
-    LogTrace --> Scrape[Attempt Web Scraping]
-    
-    API_Success -- No --> Scrape
-    Scrape --> Scrape_Success{Success?}
-    Scrape_Success -- Yes --> Normalize
+    %% Pathway 2: Scraper
+    InputSources -- Scrape --> Scrape[Deep Intelligence Scraper]
     
     %% Pathway 3: Mock
-    Scrape_Success -- No --> FallbackMock[Fallback to Mock Data]
-    FallbackMock --> Normalize
+    InputSources -- Mock --> LoadMock[Load Rich Mock Library]
     
-    Normalize --> End([Return Normalised Signals])
+    %% Fallback Logic
+    API_Success -- No --> LogWarning[Log API Error in Trace]
+    LogWarning --> LoadMock
+    
+    Normalize --> End([Return Analysis-Ready Signals])
 
     %% Styling
     classDef action fill:#bbf,stroke:#333,stroke-width:1px;
     classDef decision fill:#f9f,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
     classDef endnode fill:#ff9,stroke:#333,stroke-width:2px;
     
-    class FetchAPI,Scrape,Normalize,FallbackMock action;
-    class CheckKeys,API_Success,Scrape_Success decision;
+    class FetchAPI,Scrape,Normalize,LoadMock action;
+    class InputSources,API_Success decision;
     class Start,End endnode;
 ```
 
@@ -128,11 +103,11 @@ graph TD
 
 ## ⚙️ Configuration
 
-To enable live data fetching, ensure the following environment variables are set:
+To enable the full intelligence stack, ensure these environment variables are configured:
 
-- **GNews API**: Set `GNEWS_API_KEY` in the `.env` file.
-- **Groq Cloud**: Ensure `GROQ_API_KEY` is configured for agent synthesis.
-- **Auto-Fallback**: If keys are missing, the system will log the status in the `executionTrace` and automatically default to Mock Mode.
+- **GROQ_API_KEY**: Required for Agent LLM reasoning.
+- **FINLIGHT_API_KEY**: Required for live financial news retrieval.
+- **GNEWS_API_KEY**: Optional (Secondary fallback, if implemented).
 
 ---
-*Note: This data strategy is designed to showcase "AI Application Thinking" and "Engineering Rigor" as per the assignment evaluation criteria.*
+*Note: This data strategy focuses on "Actionable Industrial Intelligence" rather than generic information retrieval.*
