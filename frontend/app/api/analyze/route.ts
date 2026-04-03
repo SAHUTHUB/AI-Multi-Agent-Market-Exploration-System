@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server'
-import { RequestSchema } from '../../../../backend/schemas/request'
+import { z } from 'zod'
 import { spawn } from 'child_process'
 import path from 'path'
+
+// Inline schema — mirrors backend/schemas/request.ts
+// (avoids cross-workspace import that Turbopack cannot resolve in Docker)
+const RequestSchema = z.object({
+  query: z.string({ required_error: 'Query is required' }).min(1, 'Query is required'),
+  dataSource: z.array(z.enum(['api', 'scrape', 'mock'])).optional(),
+})
 
 export const runtime = 'nodejs'
 

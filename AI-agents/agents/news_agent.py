@@ -12,7 +12,7 @@ from models import (
     ConfidenceType
 )
 from providers import LLMProvider
-from tools import SignalDataTool, FinlightNewsTool
+from tools import SignalDataTool, FinlightNewsTool, WebScrapingTool
 
 NEWS_SIGNAL_SYSTEM_PROMPT = """You are a News Signal Analysis Agent specializing in financial and trade intelligence.
 
@@ -36,6 +36,7 @@ class NewsSignalAgent:
         self.provider = provider
         self.signal_data_tool = signal_data_tool
         self.finlight_tool = FinlightNewsTool()
+        self.scraping_tool = WebScrapingTool()
 
     def build_prompt(self, query_summary: QuerySummary, market_context: MarketContext, records: List[ExternalSignalRecord]) -> List[Dict[str, str]]:
         records_dict = [r.model_dump() for r in records]
@@ -104,8 +105,10 @@ class NewsSignalAgent:
                     target = []
                     print(f"[NewsSignalAgent] Finlight API error: {e}", flush=True)
             elif source == 'scrape':
-                # Simplified mock for scrape
-                target = []
+                target = await self.scraping_tool.scrape_deep_intelligence(
+                    topic=query_summary.topic,
+                    region=query_summary.region
+                )
             elif source == 'mock':
                 target = await self.signal_data_tool.load_signals(
                     topic=query_summary.topic,
