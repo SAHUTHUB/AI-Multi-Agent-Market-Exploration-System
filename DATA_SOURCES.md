@@ -107,7 +107,6 @@ To enable the full intelligence stack, ensure these environment variables are co
 
 - **GROQ_API_KEY**: Required for Agent LLM reasoning.
 - **FINLIGHT_API_KEY**: Required for live financial news retrieval.
-- **GNEWS_API_KEY**: Optional (Secondary fallback, if implemented).
 
 ---
 *Note: This data strategy focuses on "Actionable Industrial Intelligence" rather than generic information retrieval.*

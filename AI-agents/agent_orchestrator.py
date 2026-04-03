@@ -74,7 +74,6 @@ class MarketInsightOrchestrator:
 
         missing_keys = []
         if not os.environ.get("GROQ_API_KEY"): missing_keys.append("GROQ_API_KEY")
-        if "api" in data_source and not os.environ.get("GNEWS_API_KEY"): missing_keys.append("GNEWS_API_KEY")
         
         if missing_keys:
             execution_trace.append(f'warning: missing {", ".join(missing_keys)}')
