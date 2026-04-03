@@ -4,11 +4,17 @@ from models import QuerySummary, MarketContext, MarketDataRecord, EvidenceRecord
 from providers import LLMProvider
 from tools import MarketDataTool
 
-MARKET_RESEARCH_SYSTEM_PROMPT = """You are a Market Research Agent.
-Extract market context from the provided records and output JSON:
-- overview
-- keyMarkets
-- industryContext"""
+MARKET_RESEARCH_SYSTEM_PROMPT = """You are a Market Research Agent specializing in global trade intelligence.
+
+Your task: Analyze the provided market data records and produce a SPECIFIC, DATA-DRIVEN market context.
+
+STRICT RULES:
+1. keyMarkets MUST list ONLY countries that are geographically inside the given Region. Never include countries outside the region.
+2. overview MUST reference specific countries, sectors, or trends from the provided records. Do NOT write generic filler like "growing interest" or "high adoption rate" — use actual data.
+3. industryContext MUST contain 4-6 distinct, specific insights derived from the overviewPoints and industrySignals in the records. Each insight must be a complete, informative sentence.
+4. All output must be grounded in the data provided. If data is sparse, acknowledge it specifically.
+
+Output ONLY valid JSON with keys: overview (string), keyMarkets (array of country name strings), industryContext (array of strings)."""
 
 class MarketResearchAgent:
     def __init__(self, provider: LLMProvider, market_data_tool: MarketDataTool):

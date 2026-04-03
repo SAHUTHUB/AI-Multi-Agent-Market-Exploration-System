@@ -12,19 +12,30 @@ from models import (
     ConfidenceType
 )
 from providers import LLMProvider
-from tools import SignalDataTool
+from tools import SignalDataTool, FinlightNewsTool
 
-NEWS_SIGNAL_SYSTEM_PROMPT = """You are a News Signal Analysis Agent.
-Analyze the provided signals and market context.
-Output JSON:
-- recentDevelopments
-- regionalSignals
-- overallInsight"""
+NEWS_SIGNAL_SYSTEM_PROMPT = """You are a News Signal Analysis Agent specializing in financial and trade intelligence.
+
+Your task: Analyze the provided news article records and the market context to generate a SPECIFIC, EVIDENCE-BASED signal report.
+
+STRICT RULES:
+1. recentDevelopments: Extract the most significant developments DIRECTLY from the provided signal records. Each entry must:
+   - Use the ACTUAL headline from the record (do not paraphrase generically)
+   - Write a summary that adds analytical value beyond the headline — explain WHY it matters for the topic
+   - Assign impact (positive/negative/mixed/neutral) based on the article's actual sentiment
+   - Reference the actual source name and publishedAt from the record
+2. regionalSignals: Write 4-6 SHORT signal statements (one sentence each) derived from patterns across the records. Format: "[Country/Region]: [specific observation]"
+3. overallInsight: Write a 2-3 sentence strategic synthesis that identifies the dominant trend across ALL the records. Be specific — mention actual markets, sectors, or events from the data.
+
+FORBIDDEN: Do NOT write generic phrases like "growing interest", "high adoption rate", "expanding tech sector", or any sentence that could apply to any topic. Every sentence must be traceable to a specific record.
+
+Output ONLY valid JSON with keys: recentDevelopments (array), regionalSignals (array of strings), overallInsight (string)."""
 
 class NewsSignalAgent:
     def __init__(self, provider: LLMProvider, signal_data_tool: SignalDataTool):
         self.provider = provider
         self.signal_data_tool = signal_data_tool
+        self.finlight_tool = FinlightNewsTool()
 
     def build_prompt(self, query_summary: QuerySummary, market_context: MarketContext, records: List[ExternalSignalRecord]) -> List[Dict[str, str]]:
         records_dict = [r.model_dump() for r in records]
@@ -81,8 +92,17 @@ class NewsSignalAgent:
 
         for source in data_sources:
             if source == 'api':
-                # Simplified mock for API
-                target = []
+                try:
+                    target = await self.finlight_tool.fetch_news(
+                        topic=query_summary.topic,
+                        region=query_summary.region,
+                        key_markets=market_context.keyMarkets,
+                        search_hints=query_summary.searchHints,
+                    )
+                except Exception as e:
+                    # Graceful fallback: log the error and continue with other sources
+                    target = []
+                    print(f"[NewsSignalAgent] Finlight API error: {e}", flush=True)
             elif source == 'scrape':
                 # Simplified mock for scrape
                 target = []

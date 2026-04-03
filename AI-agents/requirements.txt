@@ -2,3 +2,5 @@ pydantic
 aiohttp
 python-dotenv
 openai
+finlight-client
+certifi

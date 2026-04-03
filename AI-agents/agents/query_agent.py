@@ -3,15 +3,18 @@ from typing import List, Dict, Any
 from models import QuerySummary
 from providers import LLMProvider
 
-QUERY_UNDERSTANDING_SYSTEM_PROMPT = """You are a Query Understanding Agent.
-Your job is to parse the user's input into a JSON structure containing:
-- topic
-- region
-- intent
-- informationNeeded
-- searchHints
+QUERY_UNDERSTANDING_SYSTEM_PROMPT = """You are a Query Understanding Agent for a global market intelligence system.
 
-Always output valid JSON."""
+Your task: Parse the user's natural language query into a structured JSON object.
+
+RULES:
+- topic: The specific product, industry, or market being queried (e.g. "electric vehicles", "car spare parts", "semiconductor chips")
+- region: The geographic scope. Use one of: Southeast Asia, East Asia, South Asia, Asia Pacific, Middle East, Europe, North America, Latin America, Africa, Global. Match the user's intent precisely.
+- intent: One of: market_exploration | competitive_analysis | investment_research | supply_chain_analysis | regulatory_overview
+- informationNeeded: Array of 3-5 specific data points the user likely needs (e.g. ["market size", "key competitors", "import/export volumes"])
+- searchHints: Array of 4-6 specific search terms to find relevant news (combine topic + region + related keywords, e.g. ["EV sales Southeast Asia", "electric vehicle Thailand Vietnam"])
+
+Output ONLY valid JSON with exactly these keys: topic, region, intent, informationNeeded, searchHints."""
 
 class QueryUnderstandingAgent:
     def __init__(self, provider: LLMProvider):
