@@ -111,7 +111,7 @@ cp .env.example .env
 # 2. Start the containerized service
 docker compose up
 ```
-Open [http://localhost:3000](http://localhost:3000) (or 3001 depending on mapping).
+Open [http://localhost:3000](http://localhost:3000).
 
 ### Option 2: Local Development
 ```bash
